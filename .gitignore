@@ -101,5 +101,5 @@ ENV/
 .mypy_cache/
 
 hortimon/mothership/data/*
-*./swp
-*./swo
+*.swp
+*.swo
