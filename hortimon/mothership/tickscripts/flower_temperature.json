@@ -1,0 +1,7 @@
+{
+    "measurement": {"type" : "string", "value" : "temperature" },
+    "where_filter": {"type": "lambda", "value": "\"environment\" == 'flower_tent'"},
+    "warn": {"type" : "lambda", "value" : "\"mean\" > 85.0" },
+    "crit": {"type" : "lambda", "value" : "\"mean\" > 90.0" },
+    "critReset": {"type" : "lambda", "value" : "\"mean\" < 85.0" }
+}
