@@ -32,3 +32,4 @@ stream
         .critReset(critReset)
         .stateChangesOnly()
         .log('/var/log/alerts/alerts.log')
+        .post('http://sms-notifier:5000/send-sms')
