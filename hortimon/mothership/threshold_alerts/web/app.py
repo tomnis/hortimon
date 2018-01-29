@@ -22,18 +22,18 @@ def hello_world():
 @app.route('/send-sms', methods=['POST'])
 def send_sms():
     """
-    Sends sms notifications to the numbers in the environment variable twilio_notify_to
+    Sends sms notifications to the comma-separated numbers in the environment var TWILIO_NOTIFY_TO.
     """
     json_event = json.loads(request.data)
     message = json_event["message"]
     print("parsed message:" + str(message))
-    to_numbers = os.environ['twilio_notify_to'].split(',')
+    to_numbers = os.environ['TWILIO_NOTIFY_TO'].split(',')
 
     for number in to_numbers:
         print("sending sms to " + number)
         TwilioNotifier.send_sms(number, message)
 
-    return "ok"
+    return "messages sent: " + str(len(numbers))
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')

@@ -10,10 +10,10 @@ An alternative architecture would use prometheus rather than influxdb. (pull vs 
 ## Setup
 
 - Export the following environment variables:
-  - `twilio_account_sid` twilio credentials
-  - `twilio_auth_token`
-  - `twilio_sender` twilio number to send messages from, with country code. eg +12104563456
-  - `twilio_notify_to` comma-separated numbers to send notifications to
+  - `TWILIO_ACCOUNT_SID` twilio credentials
+  - `TWILIO_AUTH_TOKEN`
+  - `TWILIO_SENDER` twilio number to send messages from, with country code. eg +12104563456
+  - `TWILIO_NOTIFY_TO` comma-separated numbers to send notifications to
 - Bring up the docker cluster `docker-compose up`
 - (Optional) test that the sms notifier service is running:
   ```bash

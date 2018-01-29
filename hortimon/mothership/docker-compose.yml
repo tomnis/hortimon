@@ -87,10 +87,10 @@ services:
   sms-notifier:
     build: ./threshold_alerts/web
     environment:
-      - twilio_account_sid
-      - twilio_auth_token
-      - twilio_sender
-      - twilio_notify_to
+      - TWILIO_ACCOUNT_SID
+      - TWILIO_AUTH_TOKEN
+      - TWILIO_SENDER
+      - TWILIO_NOTIFY_TO 
     ports:
       - "5000:5000"
     volumes:
