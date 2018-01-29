@@ -82,6 +82,8 @@ services:
     links:
       - influxdb
 
+  # flask microservice for sending sms
+  # POST to http://sms-notifier:5000/send-sms
   sms-notifier:
     build: ./threshold_alerts/web
     environment:
