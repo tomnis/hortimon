@@ -29,6 +29,9 @@ def write():
     client.write_points(json_body)
 
 def main():
+    """
+    Use this script to write high readings.
+    """
     client = InfluxDBClient('localhost', 8086, 'root', 'root', 'garden')
     client.create_database('garden')
 

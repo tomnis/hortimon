@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# use this script to recreate all the kapacitor alerts
+# docker-compose run kapacitor-cli
+# $ cd /usr/local/tickscripts
+# $ ./recreate.sh
 kapacitor delete tasks clone_temp_alert flower_temp_alert veg_temp_alert
 kapacitor delete tasks clone_humidity_alert flower_humidity_alert veg_humidity_alert
 kapacitor define-template generic_mean_alert -tick /usr/local/tickscripts/generic_mean_alert.tick -type stream

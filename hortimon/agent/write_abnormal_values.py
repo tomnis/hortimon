@@ -66,7 +66,7 @@ def write():
 
 def main():
     """
-    Writes abnormal values
+    Writes abnormal values for all sensors.
     """
     client = InfluxDBClient('localhost', 8086, 'root', 'root', 'garden')
     client.create_database('garden')
