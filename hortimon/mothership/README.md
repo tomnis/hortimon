@@ -6,9 +6,47 @@ We run docker containers for influxdb and grafana.
 
 An alternative architecture would use prometheus rather than influxdb. (pull vs push)
 
+
+## Setup
+
+- Export the following environment variables:
+  - `twilio_account_sid` twilio credentials
+  - `twilio_auth_token`
+  - `twilio_sender` twilio number to send messages from, with country code. eg +12104563456
+  - `twilio_notify_to` comma-separated numbers to send notifications to
+- Bring up the docker cluster `docker-compose up`
+- (Optional) test that the sms notifier service is running:
+  ```bash
+  $> curl -XGET http://localhost:5000
+  sms-notifier running in docker
+  ```
+- import alert tasks into kapacitor:
+  - these alert tasks POST their json events to our notifier microservice.
+  ```bash
+  $ docker-compose run kapacitor-cli
+  root@cafebabe:/# cd /usr/local/tickscripts
+  root@cafebabe:/usr/local/tickscripts# ./recreate.sh
+
+    ID                    Type      Status    Executing Databases and Retention Policies
+    clone_humidity_alert  stream    enabled   true      ["garden"."autogen"]
+    clone_temp_alert      stream    enabled   true      ["garden"."autogen"]
+    flower_humidity_alert stream    enabled   true      ["garden"."autogen"]
+    flower_temp_alert     stream    enabled   true      ["garden"."autogen"]
+    veg_humidity_alert    stream    enabled   true      ["garden"."autogen"]
+    veg_temp_alert        stream    enabled   true      ["garden"."autogen"]
+  ```
+- (Optional) create any other newly desired alerts
+  - our template for kapacitor alerts is defined in `tickscripts/generic_mean_alert.tick`
+  - create a new json file that provides all required variables.
+    see examples in `tickscripts` directory.
+  - define new kapacitor tasks and enable them:
+    ```bash
+    $ docker-compose run kapacitor-cli
+    root@cafebabe:/# kapacitor define <alert_name> -template generic_mean_alert -vars /path/to/alert.json  -dbrp garden.autogen
+    root@cafebabe:/# kapacitor enable <alert_name>
+    ```
+
+
 TODO
-- text alerts for thresholds. this can take the form of grafana webhooks, grafana email alerts,
-  or possibly a cron job that simply reads the most recent values and uses twilio api
-  the particular thresholds should probably be configurable somehow.
 - anomaly detection. this could be interesting since we are dealing with a cyclical period
   
