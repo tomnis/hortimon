@@ -94,7 +94,7 @@ def main():
     """
     Usage: run with arguments of the environments to generate fake data for eg "--clone --abnormal"
     """
-    client = InfluxDBClient('localhost', 8086, 'root', 'root', 'garden')
+    client = InfluxDBClient('hortimon-mothership.local', 8086, 'root', 'root', 'garden')
     client.create_database('garden')
 
     while True:
