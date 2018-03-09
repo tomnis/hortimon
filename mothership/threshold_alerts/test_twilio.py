@@ -13,7 +13,7 @@ def main():
     A simple test using our twilio wrapper.
     """
 
-    twilio_to = os.environ['twilio_test_to']
+    twilio_to = os.environ['TWILIO_TEST_TO']
     TwilioNotifier.send_sms(twilio_to, "hi this is your master")
 
 if __name__ == "__main__":

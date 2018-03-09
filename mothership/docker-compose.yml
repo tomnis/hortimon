@@ -1,0 +1,100 @@
+version: '3'
+
+# adapted from https://github.com/influxdata/TICK-docker/blob/master/1.3/docker-compose.yml
+services:
+
+  # Define a Telegraf service
+  #telegraf:
+  #  image: telegraf:1.4.0
+  #  volumes:
+  #    - ./etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+  #  links:
+  #    - influxdb
+  #  ports:
+  #    - "8092:8092/udp"
+  #    - "8094:8094"
+  #    - "8125:8125/udp"
+
+  # Define an InfluxDB service
+  influxdb:
+    image: influxdb:1.3.5
+    volumes:
+      - ./data/influxdb:/var/lib/influxdb
+    ports:
+      - "8086:8086"
+
+  # Define a Chronograf service
+  chronograf:
+    image: chronograf:1.3.8
+    environment:
+      INFLUXDB_URL: http://influxdb:8086
+      KAPACITOR_URL: http://kapacitor:9092
+    ports:
+      - "8888:8888"
+    links:
+      - influxdb
+      - kapacitor
+
+  # Define a Kapacitor service
+  kapacitor:
+    image: kapacitor:1.3.3
+    environment:
+      - KAPACITOR_HOSTNAME=kapacitor
+      - KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086
+    links:
+      - influxdb
+      - sms-notifier
+    ports:
+      - "9092:9092"
+    volumes:
+      - ./tickscripts:/usr/local/tickscripts
+      - ./data/alerts:/var/log/alerts
+
+  # Define a service for using the influx CLI tool.
+  # docker-compose run influxdb-cli
+  influxdb-cli:
+    image: influxdb:1.3.5
+    entrypoint:
+      - influx
+      - -host
+      - influxdb
+    links:
+      - influxdb
+
+  # Define a service for using the kapacitor CLI tool.
+  # docker-compose run kapacitor-cli
+  kapacitor-cli:
+    image: kapacitor:1.3.3
+    entrypoint: bash
+    environment:
+      KAPACITOR_URL: http://kapacitor:9092
+    links:
+      - kapacitor
+      - sms-notifier
+    volumes:
+      - ./tickscripts:/usr/local/tickscripts
+      - ./data/alerts:/var/log/alerts
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    links:
+      - influxdb
+
+  # flask microservice for sending sms
+  # POST to http://sms-notifier:5000/send-sms
+  sms-notifier:
+    build: ./threshold_alerts/web
+    environment:
+      - TWILIO_ACCOUNT_SID
+      - TWILIO_AUTH_TOKEN
+      - TWILIO_SENDER
+      - TWILIO_NOTIFY_TO 
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./threshold_alerts:/usr/local/threshold_alerts
+      - ./notifier:/usr/local/notifier
+
+

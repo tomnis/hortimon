@@ -1,0 +1,35 @@
+// which measurement we should consume from, eg 'temperature' or 'humidity'
+var measurement string
+// Optional where filter
+var where_filter = lambda: TRUE
+// Optional list of group by dimensions
+var groups = [*]
+// time window
+var window = 1m
+// Which field to process
+var field = 'value'
+// Warning criteria, has access to 'mean' field
+var warn lambda
+// Critical criteria, has access to 'mean' field
+var crit lambda
+// Critical reset criteria, has access to 'mean' field
+var critReset lambda
+
+stream
+    |from()
+        .measurement(measurement)
+        .where(where_filter)
+        .groupBy(groups)
+    |window()
+        .period(window)
+        .every(window)
+    |mean(field)
+    |alert()
+        .id('{{ .Name }}/{{ index .Tags "environment" }}')
+        .message('{{ .Level}}: {{ index .Tags "environment" }} {{ .Name }} = {{ index .Fields "mean" | printf "%0.2f" }}')
+        .warn(warn)
+        .crit(crit)
+        .critReset(critReset)
+        .stateChangesOnly()
+        .log('/var/log/alerts/alerts.log')
+        .post('http://sms-notifier:5000/send-sms')

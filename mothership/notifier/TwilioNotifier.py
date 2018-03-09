@@ -6,20 +6,21 @@ class TwilioNotifier:
     Exposes static methods for sending sms notifications.
 
     Assumes that the following environment variables are set:
-        twilio_account_sid
-        twilio_auth_token
-        twilio_sender
+        TWILIO_ACCOUNT_SID
+        TWILIO_AUTH_TOKEN
+        TWILIO_SENDER
 
-    export twilio_account_sid=<id>
-    export twilio_auth_token=<token>
+    export TWILIO_ACCOUNT_SID=<id>
+    export TWILIO_AUTH_TOKEN=<token>
+    export TWILIO_SENDER=+15101234567
     """
 
     # Your Account SID from twilio.com/console
-    account_sid = os.environ['twilio_account_sid']
+    account_sid = os.environ['TWILIO_ACCOUNT_SID']
     # Your Auth Token from twilio.com/console
-    auth_token  = os.environ['twilio_auth_token']
+    auth_token  = os.environ['TWILIO_AUTH_TOKEN']
 
-    sender = os.environ['twilio_sender']
+    sender = os.environ['TWILIO_SENDER']
 
     @classmethod
     def send_sms(self, to, body):
