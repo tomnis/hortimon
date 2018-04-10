@@ -50,7 +50,7 @@ def main():
     """
     ap = argparse.ArgumentParser()
     ap.add_argument("-l", "--location", help="zip code or city for weather conditions")
-    ap.add_argument("-p", "--plug", help="ip addresss of the smart plug")
+    ap.add_argument("-p", "--plug", help="ip address of the smart plug")
     args = vars(ap.parse_args())
 
     location = args.get("location")
