@@ -12,7 +12,7 @@ def get_sleep_time():
     """
     hour = datetime.now(pytz.timezone('US/Pacific')).hour
 
-    if hour >= 11 or hour <= 17:
+    if 11 <= hour <= 17:
         return 20
     else:
         return 180
