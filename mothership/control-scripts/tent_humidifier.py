@@ -22,7 +22,7 @@ def main():
     """
     Usage: run with arguments of the time to mist for, and the ip address of the plug
 
-    example:  >> python3 mister.py --plug 10.0.1.3
+    example:  >> python3 tent_humidifier.py --plug 10.0.1.3
     """
     ap = argparse.ArgumentParser()
     ap.add_argument("-p", "--plug", help="ip address of the smart plug")
@@ -30,13 +30,13 @@ def main():
 
     plug_ip = args.get("plug")
 
-    mist_time = get_sleep_time()
-    print("going to mist for %s" % mist_time)
+    humidify_time = get_sleep_time()
+    print("going to humidify for %s" % humidify_time)
 
     plug = SmartPlug(plug_ip)
     print("found plug on ip %s: %s" % (plug_ip, plug.alias))
     plug.turn_on()
-    time.sleep(int(mist_time))
+    time.sleep(int(humidify_time))
     plug.turn_off()
 
 
