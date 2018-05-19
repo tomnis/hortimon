@@ -2,4 +2,5 @@ click==6.7
 click-datetime==0.2
 openweathermapy==0.6.6
 pyHS100==0.3.0
+pytz==2018.4
 typing==3.6.4
