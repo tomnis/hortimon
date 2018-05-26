@@ -26,14 +26,14 @@ def send_sms():
     """
     json_event = json.loads(request.data)
     message = json_event["message"]
+    to_numbers = json_event["to_numbers"].split(',')
     print("parsed message:" + str(message))
-    to_numbers = os.environ['TWILIO_NOTIFY_TO'].split(',')
 
     for number in to_numbers:
         print("sending sms to " + number)
         TwilioNotifier.send_sms(number, message)
 
-    return "messages sent: " + str(len(numbers))
+    return "messages sent: " + str(len(to_numbers))
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')
