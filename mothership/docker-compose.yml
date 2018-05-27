@@ -85,12 +85,13 @@ services:
   # for raspberry pi
   grafana_arm:
     image: fg2it/grafana-armhf:v5.1.3
+    build: ./grafana_arm
     ports:
       - "3000:3000"
     links:
       - influxdb
     volumes:
-      - ./data/grafana_arm:/var/lib/grafana:Z
+      - grafana_arm_data:/var/lib/grafana
 
 
   # flask microservice for sending sms
@@ -108,3 +109,5 @@ services:
       - ./notifier:/usr/local/notifier
 
 
+volumes:
+  grafana_arm_data:
