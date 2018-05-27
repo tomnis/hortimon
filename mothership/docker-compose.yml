@@ -90,7 +90,7 @@ services:
     links:
       - influxdb
     volumes:
-      - ./data/grafana_arm:/var/lib/grafana
+      - ./data/grafana_arm:/var/lib/grafana:Z
 
 
   # flask microservice for sending sms
