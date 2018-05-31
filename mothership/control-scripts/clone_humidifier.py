@@ -30,14 +30,8 @@ def get_sleep_time(humidity):
     """
     if humidity > 90:
         return None
-    elif humidity > 80:
-        return 30
-    elif humidity > 70:
-        return 120
-    elif humidity > 60:
-        return 320
     else:
-        return 600
+        return 20
 
 
 def main():
