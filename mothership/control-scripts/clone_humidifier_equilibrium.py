@@ -65,9 +65,9 @@ def main():
         print("humidifying for %s seconds" % sleep_time)
         plug = SmartPlug(plug_ip)
         print("found plug on ip %s: %s" % (plug_ip, plug.alias))
-        #plug.turn_on()
-        #time.sleep(sleep_time)
-        #plug.turn_off()
+        plug.turn_on()
+        time.sleep(sleep_time)
+        plug.turn_off()
 
 
 if __name__ == "__main__":
