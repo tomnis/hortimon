@@ -16,10 +16,8 @@ def current_value(series, environment):
     """
     client = InfluxDBClient('hortimon-mothership.local', 8086, 'root', 'root', 'garden')
     query = """select %s from garden where time > now() - 1m and  "environment"='%s'""" % (series, environment)
-    print(query)
 
     result = client.query(query)
-    print(result)
     return list(result.get_points())[0][series]
 
 
@@ -62,12 +60,13 @@ def main():
     if sleep_time is None:
         print("humidity is high. not turning on humidifier")
     else:
-        print("humidifying for %s seconds" % sleep_time)
         plug = SmartPlug(plug_ip)
         print("found plug on ip %s: %s" % (plug_ip, plug.alias))
+        print("humidifying for %s seconds..." % sleep_time)
         plug.turn_on()
         time.sleep(sleep_time)
         plug.turn_off()
+        print("done.")
 
 
 if __name__ == "__main__":
