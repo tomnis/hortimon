@@ -30,10 +30,10 @@ def get_sleep_time(humidity):
     :param humidity:
     :return:
     """
-    if humidity > 75:
+    if humidity > 70:
         return None
     elif humidity > 60:
-        return 15
+        return 10
     else:
         return 20
 
