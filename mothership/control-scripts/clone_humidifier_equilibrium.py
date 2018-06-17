@@ -15,11 +15,12 @@ def current_value(series, environment):
     :return: current value in the given series
     """
     client = InfluxDBClient('hortimon-mothership.local', 8086, 'root', 'root', 'garden')
-    query = """select humidity from garden where time > now() - 2m and  "environment"='clone.chamber'"""
+    query = """select %s from garden where time > now() - 1m and  "environment"='%s'""" % (series, environment)
+    print(query)
 
     result = client.query(query)
     print(result)
-    return result
+    return list(result.get_points())[0][series]
 
 
 def get_sleep_time(humidity):
@@ -29,10 +30,11 @@ def get_sleep_time(humidity):
     :param humidity:
     :return:
     """
-    if humidity > 90:
+    print(humidity)
+    if humidity > 80:
         return None
     else:
-        return 15
+        return 10
 
 
 def main():
