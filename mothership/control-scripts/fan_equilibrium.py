@@ -67,7 +67,7 @@ def main():
     print("found plug on ip %s: %s" % (plug_ip, plug.alias))
 
     # if its too hot outside, we don't want to bring the hot air in
-    if outdoor_temperature > indoor_temperature 
+    if outdoor_temperature > indoor_temperature:
         print("outdoor temperature is high. turning off fan")
         #plug.turn_off()
     else:
