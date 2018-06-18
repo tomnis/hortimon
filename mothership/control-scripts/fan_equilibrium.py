@@ -20,7 +20,7 @@ def current_temperature(location):
     :return: current humidity in the specified location.
     """
     data = owm.get_current(location, **settings)
-    return data["main"]["temperature"]
+    return data["main"]["temp"]
 
 
 def current_value(series, environment):
