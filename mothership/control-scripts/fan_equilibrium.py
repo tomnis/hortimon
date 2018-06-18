@@ -56,7 +56,7 @@ def main():
     location = args.get("location")
     outdoor_temperature = current_temperature(location)
     print("outdoor_temperature in %s: %s" % (location, outdoor_temperature))
-	
+        
     environment = args.get("environment")
     series = args.get("series")
     plug_ip = args.get("plug")
@@ -69,7 +69,7 @@ def main():
     # if its too hot outside, we don't want to bring the hot air in
     if outdoor_temperature > indoor_temperature:
         print("outdoor temperature is high. fan should be off.")
-	if not dry_run:
+        if not dry_run:
             print("turning off fan...")
             plug = SmartPlug(plug_ip)
             print("found plug on ip %s: %s" % (plug_ip, plug.alias))
@@ -78,7 +78,7 @@ def main():
             print("running in dry run mode")
     else:
         print("outdoor temperature is cool. fan should be on.")
-	if not dry_run:
+        if not dry_run:
             print("turning on fan...")
             plug = SmartPlug(plug_ip)
             print("found plug on ip %s: %s" % (plug_ip, plug.alias))
