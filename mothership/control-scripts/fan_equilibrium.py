@@ -39,6 +39,18 @@ def current_value(series, environment):
     return list(result.get_points())[0][series]
 
 
+def set_plug(plug_ip, value):
+    plug = SmartPlug(plug_ip)
+    print("found plug on ip %s: %s" % (plug_ip, plug.alias))
+    if value:
+        print("turning on fan")
+        plug.turn_on()
+    else:
+        print("turning off fan")
+        plug.turn_off()
+
+
+
 def main():
     """
     Usage: run with arguments of the series and tag to check, and the ip address of the plug
@@ -53,38 +65,38 @@ def main():
     ap.add_argument("-p", "--plug", help="ip address of the smart plug")
     args = vars(ap.parse_args())
 
-    location = args.get("location")
-    outdoor_temperature = current_temperature(location)
-    print("outdoor_temperature in %s: %s" % (location, outdoor_temperature))
-        
-    environment = args.get("environment")
-    series = args.get("series")
     plug_ip = args.get("plug")
+    location = args.get("location")
 
-    indoor_temperature = current_value(series, environment)
-    print("%s in %s: %s" % (series, environment, indoor_temperature))
-
-    dry_run = args.get("dry_run")
-
-    # if its too hot outside, we don't want to bring the hot air in
-    if outdoor_temperature > indoor_temperature:
-        print("outdoor temperature is high. fan should be off.")
-        if not dry_run:
-            print("turning off fan...")
-            plug = SmartPlug(plug_ip)
-            print("found plug on ip %s: %s" % (plug_ip, plug.alias))
-            plug.turn_off()
+    try:
+        outdoor_temperature = current_temperature(location)
+        print("outdoor_temperature in %s: %s" % (location, outdoor_temperature))
+            
+        environment = args.get("environment")
+        series = args.get("series")
+    
+        indoor_temperature = current_value(series, environment)
+        print("%s in %s: %s" % (series, environment, indoor_temperature))
+    
+        dry_run = args.get("dry_run")
+    
+        # if its too hot outside, we don't want to bring the hot air in
+        if outdoor_temperature > indoor_temperature:
+            print("outdoor temperature is high. fan should be off.")
+            if not dry_run:
+                set_plug(plug_ip, False)
+            else:
+                print("running in dry run mode")
         else:
-            print("running in dry run mode")
-    else:
-        print("outdoor temperature is cool. fan should be on.")
-        if not dry_run:
-            print("turning on fan...")
-            plug = SmartPlug(plug_ip)
-            print("found plug on ip %s: %s" % (plug_ip, plug.alias))
-            plug.turn_on()
-        else:
-            print("running in dry run mode")
+            print("outdoor temperature is cool. fan should be on.")
+            if not dry_run:
+                set_plug(plug_ip, True)
+            else:
+                print("running in dry run mode")
+    except Exception as err:
+        print(err)
+        print("something went wrong, turn on fans")
+        set_plug(plug_ip, True)
 
 
 if __name__ == "__main__":
