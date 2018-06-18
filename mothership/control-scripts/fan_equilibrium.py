@@ -95,8 +95,9 @@ def main():
                 print("running in dry run mode")
     except Exception as err:
         print(err)
-        print("something went wrong, turn on fans")
-        set_plug(plug_ip, True)
+        if not dry_run:
+            print("something went wrong, turn on fans")
+            set_plug(plug_ip, True)
 
 
 if __name__ == "__main__":
