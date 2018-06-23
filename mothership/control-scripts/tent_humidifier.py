@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from pyHS100 import SmartPlug
-from influxdb import InfluxDbClient
+from influxdb import InfluxDBClient
 import argparse
 import pytz
 import time
