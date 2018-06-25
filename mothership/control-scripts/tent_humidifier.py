@@ -28,12 +28,12 @@ def get_sleep_time(series, environment):
     hour = datetime.now(pytz.timezone('US/Pacific')).hour
     current_humidity = current_value(series, environment)
 
-    if current_humidity > 75:
+    if current_humidity > 65:
         return None
     elif 11 <= hour <= 19:
-        return 20
+        return None
     elif current_humidity > 50:
-        return 120
+        return 110
     else:
         return 180
 
