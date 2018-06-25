@@ -21,11 +21,13 @@ kapacitor define flower_roots_humidity_alert -template generic_mean_alert -vars 
 kapacitor define veg_canopy_humidity_alert -template generic_mean_alert -vars /usr/local/tickscripts/veg_canopy_humidity.json  -dbrp garden.autogen
 
 kapacitor enable clone_chamber_temperature_alert
+kapacitor enable clone_dome_temperature_alert
 kapacitor enable flower_canopy_temperature_alert
 kapacitor enable flower_roots_temperature_alert
 kapacitor enable veg_canopy_temperature_alert
 
 kapacitor enable clone_chamber_humidity_alert
+kapacitor enable clone_dome_humidity_alert
 kapacitor enable flower_canopy_humidity_alert
 kapacitor enable flower_roots_humidity_alert
 kapacitor enable veg_canopy_humidity_alert
