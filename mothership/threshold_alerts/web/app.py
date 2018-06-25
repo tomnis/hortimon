@@ -51,7 +51,7 @@ def send_sms_to_env():
     """
     json_event = json.loads(request.data)
     message = json_event["message"]
-    to_numbers = os.env["TWILIO_NOTIFY_TO"].split(',')
+    to_numbers = os.environ["TWILIO_NOTIFY_TO"].split(',')
     print("parsed message:" + str(message))
 
     return send_sms(message, to_numbers)
