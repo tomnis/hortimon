@@ -1,4 +1,4 @@
-// which measurement we should consume from, eg 'temperature' or 'humidity'
+// which measurement we should consume from, like cpu or garden
 var measurement string
 // Optional where filter
 var where_filter = lambda: TRUE
@@ -6,8 +6,8 @@ var where_filter = lambda: TRUE
 var groups = [*]
 // time window
 var window = 1m
-// Which field to process
-var field = 'value'
+// Which field to process eg 'temperature' or 'humidity'
+var field string
 // Warning criteria, has access to 'mean' field
 var warn lambda
 // Critical criteria, has access to 'mean' field
@@ -25,11 +25,12 @@ stream
         .every(window)
     |mean(field)
     |alert()
-        .id('{{ .Name }}/{{ index .Tags "environment" }}')
-        .message('{{ .Level}}: {{ index .Tags "environment" }} {{ .Name }} = {{ index .Fields "mean" | printf "%0.2f" }}')
+        .id('{{ .Name }}/{{ index .Tags "environment" }}/' + field)
+        .message('{{ .Level}}: {{ index .Tags "environment" }} ' + field + ' = {{ index .Fields "mean" | printf "%0.2f" }}')
         .warn(warn)
         .crit(crit)
         .critReset(critReset)
         .stateChangesOnly()
         .log('/var/log/alerts/alerts.log')
-        .post('http://sms-notifier:5000/send-sms')
+        .post('http://sms-notifier:5000/send-sms-to-env')
+

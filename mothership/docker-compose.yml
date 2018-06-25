@@ -101,6 +101,7 @@ services:
       - TWILIO_ACCOUNT_SID
       - TWILIO_AUTH_TOKEN
       - TWILIO_SENDER
+      - TWILIO_NOTIFY_TO
     ports:
       - "5000:5000"
     volumes:

@@ -1,0 +1,8 @@
+{
+    "measurement": {"type" : "string", "value" : "garden" },
+    "field": {"type" : "string", "value" : "humidity" },
+    "where_filter": {"type": "lambda", "value": "\"environment\" == 'flower.canopy'"},
+    "warn": {"type" : "lambda", "value" : "\"mean\" > 55.0" },
+    "crit": {"type" : "lambda", "value" : "\"mean\" > 60.0" },
+    "critReset": {"type" : "lambda", "value" : "\"mean\" < 50.0" }
+}

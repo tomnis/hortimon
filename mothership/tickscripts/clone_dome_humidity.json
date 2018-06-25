@@ -1,7 +1,8 @@
 {
-    "measurement": {"type" : "string", "value" : "relative_humidity" },
-    "where_filter": {"type": "lambda", "value": "\"environment\" == 'clone_dome'"},
-    "warn": {"type" : "lambda", "value" : "\"mean\" < 50.0 OR \"mean\" > 95.0" },
+    "measurement": {"type" : "string", "value" : "garden" },
+    "field": {"type" : "string", "value" : "humidity" },
+    "where_filter": {"type": "lambda", "value": "\"environment\" == 'clone.dome'"},
+    "warn": {"type" : "lambda", "value" : "\"mean\" < 50.0 OR \"mean\" > 98.0" },
     "crit": {"type" : "lambda", "value" : "\"mean\" < 40.0 OR \"mean\" > 99.0" },
     "critReset": {"type" : "lambda", "value" : "\"mean\" > 70.0 AND \"mean\" < 92.0" }
 }

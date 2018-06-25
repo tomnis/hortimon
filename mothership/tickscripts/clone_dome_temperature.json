@@ -1,6 +1,7 @@
 {
-    "measurement": {"type" : "string", "value" : "temperature" },
-    "where_filter": {"type": "lambda", "value": "\"environment\" == 'clone_dome'"},
+    "measurement": {"type" : "string", "value" : "garden" },
+    "field": {"type" : "string", "value" : "temperature" },
+    "where_filter": {"type": "lambda", "value": "\"environment\" == 'clone.dome'"},
     "warn": {"type" : "lambda", "value" : "\"mean\" < 69.0 OR \"mean\" > 82.0" },
     "crit": {"type" : "lambda", "value" : "\"mean\" < 65.0 OR \"mean\" > 90.0" },
     "critReset": {"type" : "lambda", "value" : "\"mean\" > 70 AND \"mean\" < 82.0" }
