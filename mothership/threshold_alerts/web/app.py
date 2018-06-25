@@ -19,7 +19,7 @@ def hello_world():
     return 'sms-notifier running in docker'
 
 
-def send_sms(message, to_numbers):
+def internal_send_sms(message, to_numbers):
     """
     Sends given message to the each number in the list.
     """
@@ -41,7 +41,7 @@ def send_sms():
     to_numbers = json_event["to_numbers"].split(',')
     print("parsed message:" + str(message))
 
-    return send_sms(message, to_numbers)
+    return internal_send_sms(message, to_numbers)
 
 
 @app.route('/send-sms-to-env', methods=['POST'])
@@ -54,7 +54,7 @@ def send_sms_to_env():
     to_numbers = os.environ["TWILIO_NOTIFY_TO"].split(',')
     print("parsed message:" + str(message))
 
-    return send_sms(message, to_numbers)
+    return internal_send_sms(message, to_numbers)
 
 
 if __name__ == '__main__':
