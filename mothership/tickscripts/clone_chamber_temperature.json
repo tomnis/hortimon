@@ -1,5 +1,6 @@
 {
-    "measurement": {"type" : "string", "value" : "temperature" },
+    "measurement": {"type" : "string", "value" : "garden" },
+    "field": {"type" : "string", "value" : "temperature" },
     "where_filter": {"type": "lambda", "value": "\"environment\" == 'clone.chamber'"},
     "warn": {"type" : "lambda", "value" : "\"mean\" < 60.0 OR \"mean\" > 80.0" },
     "crit": {"type" : "lambda", "value" : "\"mean\" < 55.0 OR \"mean\" > 85.0" },

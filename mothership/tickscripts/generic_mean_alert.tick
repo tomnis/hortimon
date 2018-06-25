@@ -1,4 +1,4 @@
-// which measurement we should consume from, eg 'temperature' or 'humidity'
+// which measurement we should consume from, like cpu or garden
 var measurement string
 // Optional where filter
 var where_filter = lambda: TRUE
@@ -6,8 +6,8 @@ var where_filter = lambda: TRUE
 var groups = [*]
 // time window
 var window = 1m
-// Which field to process
-var field = 'value'
+// Which field to process eg 'temperature' or 'humidity'
+var field string
 // Warning criteria, has access to 'mean' field
 var warn lambda
 // Critical criteria, has access to 'mean' field
