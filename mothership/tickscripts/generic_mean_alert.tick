@@ -9,9 +9,9 @@ var window = 1m
 // Which field to process eg 'temperature' or 'humidity'
 var field string
 // Warning criteria, has access to 'mean' field
-var warn lambda
+var warn = lambda: FALSE
 // Critical criteria, has access to 'mean' field
-var crit lambda
+var crit = lambda: FALSE
 // Critical reset criteria, has access to 'mean' field
 var critReset lambda
 
