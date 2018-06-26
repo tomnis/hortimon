@@ -41,7 +41,7 @@ def current_value(series, environment):
 
 def send_notifications(message, to_numbers):
     post_data = {
-            "message" : message
+            "message" : message,
             "to_numbers" : to_numbers
             }
 
