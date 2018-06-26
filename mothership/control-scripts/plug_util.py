@@ -37,17 +37,3 @@ def set_plug(plug_ip, value):
     else:
         print("plug is already in correct state")
         return False
-
-
-plug = find_plug("clone_chamber_humidifier")
-print(plug.alias)
-print(plug.is_on)
-print(plug.ip_address)
-print(find_plug_ip_address("clone_chamber_humidifier"))
-
-
-
-
-#d = Discover.discover_single("clone_chamber_humidifier")
-#print(d)
-
