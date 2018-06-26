@@ -63,11 +63,11 @@ def set_plug(plug_ip, value):
     print("found plug on ip %s: %s" % (plug_ip, plug.alias))
     state = plug.state
     print("current plug state: " + str(state))
-    if value and state == "ON":
+    if value and state == "OFF":
         print("turning on fan")
         plug.turn_on()
         return True
-    elif not value and state == "OFF":
+    elif not value and state == "ON":
         print("turning off fan")
         plug.turn_off()
         return True
@@ -89,7 +89,7 @@ def main():
     ap.add_argument("-e", "--environment", help="influxdb tag for the series we are tracking")
     ap.add_argument("-s", "--series", help="influxdb series we are tracking")
     ap.add_argument("-p", "--plug", help="ip address of the smart plug")
-    ap.add_argument("-n", "--numbers", help="comma separated numbers to send notifications to")
+    ap.add_argument("-n", "--to-numbers", help="comma separated numbers to send notifications to")
     args = vars(ap.parse_args())
 
     plug_ip = args.get("plug")
