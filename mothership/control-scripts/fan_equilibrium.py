@@ -114,7 +114,7 @@ def main():
             if not dry_run:
                 state_changed = set_plug(plug_ip, False)
                 if state_changed:
-                    send_notifications("turned off intake fan", to_numbers)
+                    send_notifications("turned off intake fan (outdoor=%s, indoor=%s)" % (outdoor_temperature, indoor_temperature), to_numbers)
             else:
                 print("running in dry run mode")
         else:
@@ -122,7 +122,7 @@ def main():
             if not dry_run:
                 state_changed = set_plug(plug_ip, True)
                 if state_changed:
-                    send_notifications("turned on intake fan", to_numbers)
+                    send_notifications("turned on intake fan (outdoor=%s, indoor=%s)" % (outdoor_temperature, indoor_temperature), to_numbers)
             else:
                 print("running in dry run mode")
     except Exception as err:

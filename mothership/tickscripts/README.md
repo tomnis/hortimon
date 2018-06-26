@@ -8,10 +8,9 @@
 - Particular values for instantiating this template are defined in the assorted json files
 - To recreate all the kapacitator tasks:
   ```
-  docker-compose run kapacitor-cli
-  $ > cd /usr/local/tickscripts/
-  $ > cd ./recreate.sh
+  docker-compose run kapacitor-cli "/usr/local/tickscripts/recreate.sh"
   ```
+  (overrides the cmd from dockerfile)
 
 - All alerts will write their notifications to /var/log/alerts (mounted in data/alerts on the host)
 - We use `stateChangesOnly()` on our alert definitions.

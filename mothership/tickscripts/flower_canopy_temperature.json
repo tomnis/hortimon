@@ -2,6 +2,6 @@
     "measurement": {"type" : "string", "value" : "garden" },
     "field": {"type" : "string", "value" : "temperature" },
     "where_filter": {"type": "lambda", "value": "\"environment\" == 'flower.canopy'"},
-    "crit": {"type" : "lambda", "value" : "\"mean\" < 45.0 OR \"mean\" > 85.0" },
-    "critReset": {"type" : "lambda", "value" : "\"mean\" < 80.0" }
+    "warn": {"type" : "lambda", "value" : "\"mean\" < 45.0 OR \"mean\" > 85.0" },
+    "warnReset": {"type" : "lambda", "value" : "\"mean\" < 80.0" }
 }
