@@ -3,6 +3,7 @@ import argparse
 from influxdb import InfluxDBClient
 import openweathermapy.core as owm
 import os
+import requests
 import time
 
 
