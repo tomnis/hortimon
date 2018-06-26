@@ -1,4 +1,5 @@
 from pyHS100 import SmartPlug
+from plug_util import find_plug
 import argparse
 from influxdb import InfluxDBClient
 import os
@@ -40,17 +41,17 @@ def main():
     """
     Usage: run with arguments of the series and tag to check, and the ip address of the plug
 
-    example:  >> python3 humidifier.py --environment clone.chamber --series humidity --plug 10.0.1.3
+    example:  >> python3 humidifier.py --environment clone.chamber --series humidity --plug-alias humidifier
     """
     ap = argparse.ArgumentParser()
     ap.add_argument("-e", "--environment", help="influxdb tag for the series we are tracking")
     ap.add_argument("-s", "--series", help="influxdb series we are tracking")
-    ap.add_argument("-p", "--plug", help="ip address of the smart plug")
+    ap.add_argument("-p", "--plug-alias", help="alias of the smart plug")
     args = vars(ap.parse_args())
 
     environment = args.get("environment")
     series = args.get("series")
-    plug_ip = args.get("plug")
+    plug_alias = args.get("plug_alias")
 
     value = current_value(series, environment)
     print("%s in %s: %s" % (series, environment, value))
@@ -60,8 +61,8 @@ def main():
     if sleep_time is None:
         print("humidity is high. not turning on humidifier")
     else:
-        plug = SmartPlug(plug_ip)
-        print("found plug on ip %s: %s" % (plug_ip, plug.alias))
+        plug = find_plug(plug_alias)
+        print("found plug on ip %s: %s" % (plug.ip_address, plug.alias))
         print("humidifying for %s seconds..." % sleep_time)
         plug.turn_on()
         time.sleep(sleep_time)

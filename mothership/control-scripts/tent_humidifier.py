@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from plug_util import find_plug
 from pyHS100 import SmartPlug
 from influxdb import InfluxDBClient
 import argparse
@@ -42,15 +42,15 @@ def main():
     """
     Usage: run with arguments of the series, environment, and the ip address of the plug we should turn on.
 
-    example:  >> python3 tent_humidifier.py --plug 10.0.1.3
+    example:  >> python3 tent_humidifier.py --plug-alias humidifier-01
     """
     ap = argparse.ArgumentParser()
     ap.add_argument("-e", "--environment", help="influxdb tag for the series we are tracking")
     ap.add_argument("-s", "--series", help="influxdb series we are tracking")
-    ap.add_argument("-p", "--plug", help="ip address of the smart plug")
+    ap.add_argument("-p", "--plug-alias", help="alias of the smart plug")
     args = vars(ap.parse_args())
 
-    plug_ip = args.get("plug")
+    plug_alias = args.get("plug_alias")
     series = args.get("series")
     environment = args.get("environment")
 
@@ -58,8 +58,8 @@ def main():
     print("going to humidify for %s" % humidify_time)
 
     if humidify_time is not None:
-        plug = SmartPlug(plug_ip)
-        print("found plug on ip %s: %s" % (plug_ip, plug.alias))
+        plug = find_plug(plug_alias)
+        print("found plug on ip %s: %s" % (plug.ip_address, plug.alias))
         plug.turn_on()
         time.sleep(int(humidify_time))
         plug.turn_off()

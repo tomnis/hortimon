@@ -1,6 +1,7 @@
 from pyHS100 import SmartPlug
 import argparse
 from influxdb import InfluxDBClient
+from plug_util import find_plug_ip_address, set_plug
 import openweathermapy.core as owm
 import os
 import requests
@@ -52,31 +53,6 @@ def send_notifications(message, to_numbers):
     print("POST to notifier server response: " + str(r.status_code))
     return r
 
-
-
-def set_plug(plug_ip, value):
-    """
-    Sets the plug at the given ip to the given value.
-    Returns true iff the plug had a state change.
-    """
-    plug = SmartPlug(plug_ip)
-    print("found plug on ip %s: %s" % (plug_ip, plug.alias))
-    state = plug.state
-    print("current plug state: " + str(state))
-    if value and state == "OFF":
-        print("turning on fan")
-        plug.turn_on()
-        return True
-    elif not value and state == "ON":
-        print("turning off fan")
-        plug.turn_off()
-        return True
-    else:
-        print("plug is already in correct state")
-        return False
-
-
-
 def main():
     """
     Usage: run with arguments of the series and tag to check, and the ip address of the plug
@@ -88,11 +64,12 @@ def main():
     ap.add_argument("-l", "--location", help="zip code or city for weather conditions")
     ap.add_argument("-e", "--environment", help="influxdb tag for the series we are tracking")
     ap.add_argument("-s", "--series", help="influxdb series we are tracking")
-    ap.add_argument("-p", "--plug", help="ip address of the smart plug")
+    ap.add_argument("-p", "--plug-alias", help="alias of the smart plug")
     ap.add_argument("-n", "--to-numbers", help="comma separated numbers to send notifications to")
     args = vars(ap.parse_args())
 
-    plug_ip = args.get("plug")
+    plug_alias = args.get("plug_alias")
+    plug_ip = find_plug_ip_address(plug_alias)
     location = args.get("location")
 
     try:
