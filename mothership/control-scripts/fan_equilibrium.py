@@ -62,11 +62,11 @@ def set_plug(plug_ip, value):
     print("found plug on ip %s: %s" % (plug_ip, plug.alias))
     state = plug.state
     print("current plug state: " + str(state))
-    if value and not state:
+    if value and state == "ON":
         print("turning on fan")
         plug.turn_on()
         return True
-    elif state and not value:
+    elif not value and state == "OFF":
         print("turning off fan")
         plug.turn_off()
         return True
