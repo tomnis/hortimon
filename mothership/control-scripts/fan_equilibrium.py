@@ -66,7 +66,7 @@ def set_plug(plug_ip, value):
         print("turning on fan")
         plug.turn_on()
         return True
-    else if state and not value:
+    elif state and not value:
         print("turning off fan")
         plug.turn_off()
         return True
