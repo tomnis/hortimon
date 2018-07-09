@@ -1,24 +1,25 @@
 from pyHS100 import SmartPlug
+from plug_util import find_plug
 import argparse
-import openweathermapy.core as owm
+from influxdb import InfluxDBClient
 import os
 import time
 
-open_weather_map_key = os.environ["OPEN_WEATHER_MAP_KEY"]
-settings = {"units": "imperial", "APPID": open_weather_map_key}
 
-
-def current_humidity(location):
+def current_value(series, environment):
     """
-    Checks humidity in the specified location.
+    Checks current value in the given series
 
-    See https://pypi.python.org/pypi/openweathermapy/0.6.6
 
-    :param location: zip code or city to check for current conditions.
-    :return: current humidity in the specified location.
+    :param series: series to check
+    :param environment: tag to check
+    :return: current value in the given series
     """
-    data = owm.get_current(location, **settings)
-    return data["main"]["humidity"]
+    client = InfluxDBClient('hortimon-mothership.local', 8086, 'root', 'root', 'garden')
+    query = """select %s from garden where time > now() - 1m and  "environment"='%s'""" % (series, environment)
+
+    result = client.query(query)
+    return list(result.get_points())[0][series]
 
 
 def get_sleep_time(humidity):
@@ -28,42 +29,45 @@ def get_sleep_time(humidity):
     :param humidity:
     :return:
     """
-    if humidity > 90:
+    if humidity > 65:
         return None
+    elif humidity > 55:
+        return 10
     else:
         return 20
 
 
 def main():
     """
-    Usage: run with arguments of the zip code or city to check humidity in, and the ip address of the plug
+    Usage: run with arguments of the series and tag to check, and the ip address of the plug
 
-    Make sure to export OPEN_WEATHER_MAP_KEY as an environment variable.
-
-    example:  >> python3 humidifier.py --location mordor --plug 10.0.1.3
+    example:  >> python3 humidifier.py --environment clone.chamber --series humidity --plug-alias humidifier
     """
     ap = argparse.ArgumentParser()
-    ap.add_argument("-l", "--location", help="zip code or city for weather conditions")
-    ap.add_argument("-p", "--plug", help="ip address of the smart plug")
+    ap.add_argument("-e", "--environment", help="influxdb tag for the series we are tracking")
+    ap.add_argument("-s", "--series", help="influxdb series we are tracking")
+    ap.add_argument("-p", "--plug-alias", help="alias of the smart plug")
     args = vars(ap.parse_args())
 
-    location = args.get("location")
-    plug_ip = args.get("plug")
+    environment = args.get("environment")
+    series = args.get("series")
+    plug_alias = args.get("plug_alias")
 
-    humidity = current_humidity(location)
-    print("humidity in %s: %s" % (location, humidity))
+    value = current_value(series, environment)
+    print("%s in %s: %s" % (series, environment, value))
 
-    sleep_time = get_sleep_time(humidity)
+    sleep_time = get_sleep_time(value)
 
     if sleep_time is None:
-        print("humidity is high. is it raining? not turning on humidifier")
+        print("humidity is high. not turning on humidifier")
     else:
-        print("humidifying for %s seconds" % sleep_time)
-        plug = SmartPlug(plug_ip)
-        print("found plug on ip %s: %s" % (plug_ip, plug.alias))
+        plug = find_plug(plug_alias)
+        print("found plug on ip %s: %s" % (plug.ip_address, plug.alias))
+        print("humidifying for %s seconds..." % sleep_time)
         plug.turn_on()
         time.sleep(sleep_time)
         plug.turn_off()
+        print("done.")
 
 
 if __name__ == "__main__":

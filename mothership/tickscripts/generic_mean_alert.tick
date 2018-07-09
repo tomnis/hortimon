@@ -4,16 +4,23 @@ var measurement string
 var where_filter = lambda: TRUE
 // Optional list of group by dimensions
 var groups = [*]
+
 // time window
 var window = 1m
+var period = 2m
+
 // Which field to process eg 'temperature' or 'humidity'
 var field string
+
 // Warning criteria, has access to 'mean' field
-var warn lambda
+var warn = lambda: FALSE
+// Warning reset criteria, has access to 'mean' field
+var warnReset = lambda: FALSE
+
 // Critical criteria, has access to 'mean' field
-var crit lambda
+var crit = lambda: FALSE
 // Critical reset criteria, has access to 'mean' field
-var critReset lambda
+var critReset = lambda: FALSE
 
 stream
     |from()
@@ -21,13 +28,14 @@ stream
         .where(where_filter)
         .groupBy(groups)
     |window()
-        .period(window)
+        .period(period)
         .every(window)
     |mean(field)
     |alert()
         .id('{{ .Name }}/{{ index .Tags "environment" }}/' + field)
         .message('{{ .Level}}: {{ index .Tags "environment" }} ' + field + ' = {{ index .Fields "mean" | printf "%0.2f" }}')
         .warn(warn)
+        .warnReset(warnReset)
         .crit(crit)
         .critReset(critReset)
         .stateChangesOnly()
