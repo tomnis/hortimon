@@ -7,7 +7,7 @@ var groups = [*]
 
 // time window
 var window = 1m
-var period = 2m
+var period = 1m
 
 // Which field to process eg 'temperature' or 'humidity'
 var field string
