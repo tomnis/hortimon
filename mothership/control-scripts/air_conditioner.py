@@ -62,7 +62,7 @@ def main():
         series = args.get("series")
     
         current_temperature = current_value(series, environment)
-        print("%s in %s: %s" % (series, environment, indoor_temperature))
+        print("%s in %s: %s" % (series, environment, current_temperature))
     
         dry_run = args.get("dry_run")
         to_numbers = args.get("to_numbers")
@@ -86,6 +86,7 @@ def main():
                 print("running in dry run mode")
     except Exception as err:
         print(err)
+        dry_run = args.get("dry_run")
         if not dry_run:
             print("something went wrong, turn on ac")
             set_plug(plug_ip, True)
