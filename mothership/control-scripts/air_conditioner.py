@@ -72,16 +72,16 @@ def main():
             print("current temperature is low . ac should be off.")
             if not dry_run:
                 state_changed = set_plug(plug_ip, False)
-                if state_changed:
-                    send_notifications("turned off ac (current=%s, target=%s)" % (current_temperature, target_temperature), to_numbers)
+                #if state_changed:
+                #    send_notifications("turned off ac (current=%s, target=%s)" % (current_temperature, target_temperature), to_numbers)
             else:
                 print("running in dry run mode")
         else:
             print("current temperature is warm. ac should be on.")
             if not dry_run:
                 state_changed = set_plug(plug_ip, True)
-                if state_changed:
-                    send_notifications("turned on ac (current=%s, target=%s)" % (current_temperature, target_temperature), to_numbers)
+                #if state_changed:
+                #    send_notifications("turned on ac (current=%s, target=%s)" % (current_temperature, target_temperature), to_numbers)
             else:
                 print("running in dry run mode")
     except Exception as err:
@@ -89,6 +89,7 @@ def main():
         dry_run = args.get("dry_run")
         if not dry_run:
             print("something went wrong, turn on ac")
+            send_notification("error %s" % err)
             set_plug(plug_ip, True)
 
 
