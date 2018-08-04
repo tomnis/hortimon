@@ -1,3 +1,4 @@
+from datetime import datetime
 from pyHS100 import SmartPlug
 import argparse
 from influxdb import InfluxDBClient
@@ -89,8 +90,13 @@ def main():
         dry_run = args.get("dry_run")
         if not dry_run:
             print("something went wrong, turn on ac")
+            hour = datetime.now(pytz.timezone('US/Pacific')).hour
+            if hour < 10 or hour >= 20:
+                set_plug(plug_ip, True)
+            else:
+                set_plug(plug_ip, False)
+            
             send_notification("error %s" % err)
-            set_plug(plug_ip, True)
 
 
 if __name__ == "__main__":
