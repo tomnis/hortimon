@@ -1,3 +1,4 @@
+from datetime import datetime
 from pyHS100 import SmartPlug
 import argparse
 from influxdb import InfluxDBClient
@@ -72,16 +73,16 @@ def main():
             print("current temperature is low . ac should be off.")
             if not dry_run:
                 state_changed = set_plug(plug_ip, False)
-                if state_changed:
-                    send_notifications("turned off ac (current=%s, target=%s)" % (current_temperature, target_temperature), to_numbers)
+                #if state_changed:
+                #    send_notifications("turned off ac (current=%s, target=%s)" % (current_temperature, target_temperature), to_numbers)
             else:
                 print("running in dry run mode")
         else:
             print("current temperature is warm. ac should be on.")
             if not dry_run:
                 state_changed = set_plug(plug_ip, True)
-                if state_changed:
-                    send_notifications("turned on ac (current=%s, target=%s)" % (current_temperature, target_temperature), to_numbers)
+                #if state_changed:
+                #    send_notifications("turned on ac (current=%s, target=%s)" % (current_temperature, target_temperature), to_numbers)
             else:
                 print("running in dry run mode")
     except Exception as err:
@@ -89,7 +90,13 @@ def main():
         dry_run = args.get("dry_run")
         if not dry_run:
             print("something went wrong, turn on ac")
-            set_plug(plug_ip, True)
+            hour = datetime.now(pytz.timezone('US/Pacific')).hour
+            if hour < 10 or hour >= 20:
+                set_plug(plug_ip, True)
+            else:
+                set_plug(plug_ip, False)
+            
+            send_notification("error %s" % err)
 
 
 if __name__ == "__main__":
