@@ -2,6 +2,6 @@
     "measurement": {"type" : "string", "value" : "garden" },
     "field": {"type" : "string", "value" : "humidity" },
     "where_filter": {"type": "lambda", "value": "\"environment\" == 'flower.roots'"},
-    "warn": {"type" : "lambda", "value" : "\"mean\" < 40.0" },
-    "warnReset": {"type" : "lambda", "value" : "\"mean\" > 50.0" }
+    "warn": {"type" : "lambda", "value" : "\"mean\" < 30.0" },
+    "warnReset": {"type" : "lambda", "value" : "\"mean\" > 40.0" }
 }
