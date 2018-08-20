@@ -57,6 +57,12 @@ def main():
 
     try:
         target_temperature = float(args.get("target_temperature"))
+        hour = datetime.now(pytz.timezone('US/Pacific')).hour
+        # if its "night", we'll add an artificial buffer to increase the target temperature
+        # we don't want it to get too cold ;)
+        if hour > 8 and hour < 21:
+            print("adding buffer zone")
+            target_temperature += 8
         print("target temperature is: %s" % (target_temperature))
             
         environment = args.get("environment")
