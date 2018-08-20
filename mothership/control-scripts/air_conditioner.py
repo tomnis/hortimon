@@ -6,6 +6,7 @@ from plug_util import find_plug_ip_address, set_plug
 import os
 import requests
 import time
+import pytz
 
 
 def current_value(series, environment):
