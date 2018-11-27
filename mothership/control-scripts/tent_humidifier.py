@@ -2,6 +2,7 @@ from datetime import datetime
 from plug_util import find_plug
 from pyHS100 import SmartPlug
 from influxdb import InfluxDBClient
+from utils import retry
 import argparse
 import pytz
 import time
@@ -37,7 +38,7 @@ def get_sleep_time(series, environment):
     else:
         return 180
 
-
+@retry(Exception, tries=4)
 def main():
     """
     Usage: run with arguments of the series, environment, and the ip address of the plug we should turn on.

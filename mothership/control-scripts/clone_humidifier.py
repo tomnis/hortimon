@@ -1,5 +1,6 @@
 from pyHS100 import SmartPlug
 from plug_util import find_plug
+from utils import retry
 import argparse
 from influxdb import InfluxDBClient
 import os
@@ -37,6 +38,7 @@ def get_sleep_time(humidity):
         return 20
 
 
+@retry(Exception, tries=4)
 def main():
     """
     Usage: run with arguments of the series and tag to check, and the ip address of the plug
