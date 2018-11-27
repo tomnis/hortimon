@@ -27,7 +27,7 @@ def retry(ExceptionToCheck, tries=4, delay=3, backoff=2):
             while mtries > 1:
                 try:
                     return f(*args, **kwargs)
-                except ExceptionToCheck, e:
+                except ExceptionToCheck as e:
                     msg = "%s, Retrying in %d seconds..." % (str(e), mdelay)
                     print(msg)
                     time.sleep(mdelay)
@@ -38,17 +38,3 @@ def retry(ExceptionToCheck, tries=4, delay=3, backoff=2):
         return f_retry  # true decorator
 
     return deco_retry
-
-
-
-@retry(Exception, tries=20, delay=1, backoff=1)
-def test_multiple_exceptions():
-    x = random.random()
-    if x < 0.40:
-        raise NameError("NameError")
-    elif x < 0.80:
-        raise IOError("IOError")
-    else:
-        raise KeyError("KeyError")
-
-test_multiple_exceptions()
