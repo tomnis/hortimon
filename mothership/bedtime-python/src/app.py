@@ -14,8 +14,8 @@ def hello():
     return 'Hello, World!'
 
 
-@app.route('/bedtime')
-def bedtime():
+@app.route('/bedtime/<int:starting_brightness>/<int:interval_sec>')
+def bedtime(starting_brightness, interval_sec):
     global background
     hue = HueWrapper("philips-hue.lan")
     hue.turn_group_off("tomas overhead lights")
@@ -26,14 +26,14 @@ def bedtime():
         background.stop()
     print "starting new task"
     # sleep 60 seconds between transitions
-    background = BackgroundTask(hue, "tomas lamps", 40, 60)
-    return 'started bed timer'
+    background = BackgroundTask(hue, "tomas lamps", starting_brightness, interval_sec)
+    return 'started bed timer (brightness=%s, interval=%ss)' % (starting_brightness, interval_sec)
 
 
 @app.route('/test')
 def test():
     hue = HueWrapper("philips-hue.lan")
-    hue.set_light_group_temp("Upstairs Room", 4000)
+    hue.set_light_group_temp("Upstairs Room", 2000)
 
     return 'set light color temp'
 

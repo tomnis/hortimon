@@ -19,7 +19,7 @@ class BackgroundTask(object):
             hue.turn_group_on(group)
 
             while self.__continue and current_brightness > 0:
-                hue.set_light_group_brightness(group, current_brightness)
+                hue.set_light_group_brightness(group, current_brightness, 300)
                 time.sleep(interval)
                 current_brightness -= 1
 
