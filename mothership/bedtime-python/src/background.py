@@ -13,13 +13,16 @@ class BackgroundTask(object):
     def __init__(self, hue, group, starting_brightness, interval):
         """ Constructor
         """
+        # in seconds
+        transition_time_deci_sec = min(interval, 30) * 10
+        print "transition_time: %s" % transition_time_deci_sec
         # start timer for interval
         def run_with_timer():
             current_brightness = starting_brightness
             hue.turn_group_on(group)
 
             while self.__continue and current_brightness > 0:
-                hue.set_light_group_brightness(group, current_brightness, 300)
+                hue.set_light_group_brightness(group, current_brightness, transition_time_deci_sec / 2)
                 time.sleep(interval)
                 current_brightness -= 1
 
