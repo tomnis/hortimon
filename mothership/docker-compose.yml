@@ -108,10 +108,5 @@ services:
       - ./threshold_alerts:/usr/local/threshold_alerts
       - ./notifier:/usr/local/notifier
 
-  bedtime:
-    build: ./bedtime-python
-    ports:
-      - "5001:5000"
-
 volumes:
   grafana_arm_data:
