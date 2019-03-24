@@ -64,7 +64,7 @@ class HueWrapper:
         mireds = int(round(1e6 / temp))
         self.bridge.set_group(group, 'ct', mireds)
 
-    def set_light_brightness(self, light, brightness_pct):
+    def set_light_brightness(self, light, brightness_pct, transition_time):
         """
         Sets the brightness for the specified light.
 
@@ -72,9 +72,10 @@ class HueWrapper:
 
         :param light:
         :param brightness_pct:
+        :param transition_time:
         :return:
         """
-        self.bridge.set_light(light, 'bri', self.brightness_from_pct(brightness_pct))
+        self.bridge.set_light(light, 'bri', self.brightness_from_pct(brightness_pct), transitiontime=transition_time)
 
     @staticmethod
     def brightness_from_pct(brightness_pct):

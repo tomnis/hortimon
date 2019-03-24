@@ -1,8 +1,9 @@
-from flask import Flask
+from flask import Flask, render_template, request
 from hue_wrapper import HueWrapper
 from background import BackgroundTask
 
 import logging
+import json
 
 logging.basicConfig()
 app = Flask(__name__)
@@ -13,38 +14,32 @@ background = None
 def hello():
     return 'Hello, World!'
 
+@app.route('/circle_wave')
+def circle_wave():
+    return render_template('circle_wave.html')
 
-@app.route('/bedtime/<int:starting_brightness>/<int:interval_sec>')
-def bedtime(starting_brightness, interval_sec):
+
+@app.route('/bedtime')
+def student():
+   return render_template('bedtime.html')
+
+@app.route('/bedtime', methods = ['POST'])
+def bedtime():
     global background
-    hue = HueWrapper("philips-hue.lan")
-    hue.turn_group_off("tomas overhead lights")
-    hue.set_light_group_temp("tomas lamps", 2000)
 
     if background is not None:
         print("time in progress, stopping")
         background.stop()
-    print "starting new task"
+
+    result = json.loads(json.dumps(request.form))
+    starting_brightness = int(result[u'brightness'])
+    # total duration of timer in minutes
+    time_minutes = int(result[u'time_minutes'])
+    print "starting new task (%s, %s)" % (starting_brightness, time_minutes)
     # sleep 60 seconds between transitions
-    background = BackgroundTask(hue, "tomas lamps", starting_brightness, interval_sec)
-    return 'started bed timer (brightness=%s, interval=%ss)' % (starting_brightness, interval_sec)
-
-
-@app.route('/test')
-def test():
     hue = HueWrapper("philips-hue.lan")
-    hue.set_light_group_temp("Upstairs Room", 2000)
-
-    return 'set light color temp'
-
-@app.route('/cancel')
-def cancel():
-    """
-
-    should turn off lights in the group
-    """
-    #hue.turn_group_off(group)
-    return "canceled"
+    background = BackgroundTask(hue, "tomas lamps", starting_brightness, time_minutes)
+    return 'started bed timer (brightness=%s, time_minutes=%sm)' % (starting_brightness, time_minutes)
 
 
 if __name__ == '__main__':
