@@ -6,3 +6,6 @@ services:
     build: .
     ports:
       - "5001:5000"
+
+    volumes:
+        - "~/.python_hue:/root/.python_hue"
