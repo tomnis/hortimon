@@ -1,15 +1,59 @@
 <html>
    <head>
-      <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
-      <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-      <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/bootstrap-slider.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/bootstrap-slider.min.js"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/css/bootstrap-slider.min.css">
    </head>
+
    <body>
-      <form action = "/bedtime" method = "POST">
-         <label for="brightness">brightness:</label>
-         <input type="range" name="brightness" id="brightness" min="0" max="100" value="20">
-         <label for="time">time:</label>
-         <input type="range" name="time" id="time" min="0" max="60" value="45">
-      </form>
+
+       <br>
+       <div class="container-fluid mx-auto" style="width: 90%">
+         <form action = "/bedtime" method = "POST">
+            <div class=container>
+               <div class="row">
+                  <div class="col"><label for="brightness">brightness:</label></div>
+                  <div class="col"><label for="time_minutes">time:</label></div>
+               </div>
+               <div class="row">
+                  <div class="col"><input id="brightness" type="text"/></div>
+                  <div class="col"><input id="time_minutes" type="text"/></div>
+               </div>
+               <div class="row">
+                  <div class="col"><input type="submit" value="submit"/></col>
+               </div>
+            </div>
+         </form>
+       </div>
+
+      <script type="text/javascript">
+         $(document).ready(function() {
+            $("#brightness").slider({
+               min: 0,
+               max: 100,
+               value: 15,
+               steps: 1,
+               ticks_tooltip: true,
+               tooltip: 'always',
+               tooltip_position: 'left',
+               orientation: 'vertical',
+               reversed: true
+            });
+            $("#time_minutes").slider({
+               min: 0,
+               max: 60,
+               value: 45,
+               steps: 1,
+               tooltip: 'always',
+               tooltip_position: 'right',
+               orientation: 'vertical',
+               reversed: true
+            });
+         });
+      </script>
+
    </body>
 </html>
