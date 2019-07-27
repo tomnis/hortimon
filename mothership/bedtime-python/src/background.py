@@ -16,7 +16,7 @@ class BackgroundTask(object):
         # in seconds
         interval_sec = time_minutes * 60.0 / starting_brightness
         transition_time_deci_sec = min(interval_sec, 10) * 10
-        print "transition_time: %s" % transition_time_deci_sec
+        print("transition_time: %s" % transition_time_deci_sec)
         # start timer for interval
 
         def run_with_timer():

@@ -35,7 +35,7 @@ def bedtime():
     starting_brightness = int(result[u'brightness'])
     # total duration of timer in minutes
     time_minutes = int(result[u'time_minutes'])
-    print "starting new task (%s, %s)" % (starting_brightness, time_minutes)
+    print("starting new task (%s, %s)" % (starting_brightness, time_minutes))
     # sleep 60 seconds between transitions
     hue = HueWrapper("philips-hue.lan")
     background = BackgroundTask(hue, "tomas lamps", starting_brightness, time_minutes)
