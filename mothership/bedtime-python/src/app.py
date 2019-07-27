@@ -23,7 +23,7 @@ def circle_wave():
 def student():
    return render_template('bedtime.html')
 
-@app.route('/bedtime', methods = ['POST'])
+@app.route('/bedtimePost', methods = ['POST'])
 def bedtime():
     global background
 
