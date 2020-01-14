@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 
 # adapted from https://github.com/influxdata/TICK-docker/blob/master/1.3/docker-compose.yml
 services:
@@ -93,7 +93,7 @@ services:
       - grafana_arm_data:/var/lib/grafana
 
 
-  # flask microservice for sending sms
+  # flask microservice for sending sms text
   # POST to http://sms-notifier:5000/send-sms
   sms-notifier:
     build: ./threshold_alerts/web
