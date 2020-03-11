@@ -108,6 +108,5 @@ services:
       - ./threshold_alerts:/usr/local/threshold_alerts
       - ./notifier:/usr/local/notifier
 
-
 volumes:
   grafana_arm_data:
