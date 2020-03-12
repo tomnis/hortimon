@@ -19,25 +19,24 @@ services:
   influxdb:
     image: influxdb:1.7
     labels:
-      - "traefik.http.routers.grafana.rule=Host(`isengard.local`) && PathPrefix(`/influxdb`)"
-      - "traefik.http.middlewares.grafana.stripprefix.prefixes=/influxdb"
-      - "traefik.http.services.grafana.loadbalancer.server.port=8086"
-      - "traefik.http.middlewares.grafana.stripprefix.forceslash=true"
+      - "traefik.http.routers.influxdb.rule=Host(`isengard.local`) && PathPrefix(`/influxdb/`)"
+      - "traefik.http.middlewares.influxdb.stripprefix.prefixes=/influxdb"
+      - "traefik.http.middlewares.influxdb.stripprefix.forceslash=true"
+      - "traefik.http.routers.influxdb.middlewares=influxdb@docker"
     volumes:
       - ./data/influxdb:/var/lib/influxdb
     networks:
       - isengard-overlay
-    ports:
-      - "8086:8086"
 
   # Define a Chronograf service
   chronograf:
-    image: chronograf:1.3.8
+    image: chronograf:1.8.0
     environment:
       INFLUXDB_URL: http://influxdb:8086
       KAPACITOR_URL: http://kapacitor:9092
-    ports:
-      - "8888:8888"
+      BASE_PATH: /chronograf
+    labels:
+      - "traefik.http.routers.chronograf.rule=Host(`isengard.local`) && PathPrefix(`/chronograf/`)"
     links:
       - influxdb
       - kapacitor
@@ -92,6 +91,7 @@ services:
 
   grafana:
     image: grafana/grafana:6.6.2
+    # TODO consider using strip prefix instead of root url
     environment:
         GF_AUTH_ANONYMOUS_ENABLED: "true"
         GF_SERVER_DOMAIN: "isengard.local"
@@ -99,9 +99,6 @@ services:
         GF_SERVER_SERVE_FROM_SUB_PATH: "true"
     labels:
       - "traefik.http.routers.grafana.rule=Host(`isengard.local`) && PathPrefix(`/grafana`)"
-      - "traefik.http.middlewares.grafana.stripprefix.prefixes=/grafana"
-      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
-      - "traefik.http.middlewares.grafana.stripprefix.forceslash=true"
     links:
       - influxdb
     networks:
@@ -121,7 +118,6 @@ services:
       - TWILIO_NOTIFY_TO
     labels:
       - "traefik.http.routers.sms-notifier.rule=Host(`isengard.local`) && PathPrefix(`/send-sms`)"
-      - "traefik.http.services.sms-notifier.loadbalancer.server.port=5000"
     networks:
       - isengard-overlay
     volumes:

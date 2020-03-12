@@ -1,7 +1,6 @@
-version: '3.2'
+version: '3.7'
 
 services:
-
   bedtime:
     build: .
     restart: always
@@ -9,7 +8,6 @@ services:
       - "~/.python_hue:/root/.python_hue"
     labels:
       - "traefik.http.routers.bedtime.rule=Host(`isengard.local`) && PathPrefix(`/bedtime`)"
-      - "traefik.http.services.bedtime.loadbalancer.server.port=5000"
     networks:
       - isengard-overlay
 
