@@ -1,4 +1,4 @@
-version: '3.2'
+version: '3.7'
 
 # adapted from https://github.com/influxdata/TICK-docker/blob/master/1.3/docker-compose.yml
 services:
@@ -17,9 +17,16 @@ services:
 
   # Define an InfluxDB service
   influxdb:
-    image: influxdb:1.3.5
+    image: influxdb:1.7
+    labels:
+      - "traefik.http.routers.grafana.rule=Host(`isengard.local`) && PathPrefix(`/influxdb`)"
+      - "traefik.http.middlewares.grafana.stripprefix.prefixes=/influxdb"
+      - "traefik.http.services.grafana.loadbalancer.server.port=8086"
+      - "traefik.http.middlewares.grafana.stripprefix.forceslash=true"
     volumes:
       - ./data/influxdb:/var/lib/influxdb
+    networks:
+      - isengard-overlay
     ports:
       - "8086:8086"
 
@@ -34,6 +41,8 @@ services:
     links:
       - influxdb
       - kapacitor
+    networks:
+      - isengard-overlay
 
   # Define a Kapacitor service
   kapacitor:
@@ -46,6 +55,8 @@ services:
       - sms-notifier
     ports:
       - "9092:9092"
+    networks:
+      - isengard-overlay
     volumes:
       - ./tickscripts:/usr/local/tickscripts
       - ./data/alerts:/var/log/alerts
@@ -60,6 +71,8 @@ services:
       - influxdb
     links:
       - influxdb
+    networks:
+      - isengard-overlay
 
   # Define a service for using the kapacitor CLI tool.
   # docker-compose run kapacitor-cli
@@ -71,24 +84,28 @@ services:
     links:
       - kapacitor
       - sms-notifier
+    networks:
+      - isengard-overlay
     volumes:
       - ./tickscripts:/usr/local/tickscripts
       - ./data/alerts:/var/log/alerts
 
-  grafana_x86:
-    image: grafana/grafana
-    ports:
-      - "3001:3001"
+  grafana:
+    image: grafana/grafana:6.6.2
+    environment:
+        GF_AUTH_ANONYMOUS_ENABLED: "true"
+        GF_SERVER_DOMAIN: "isengard.local"
+        GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s/grafana/"
+        GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+    labels:
+      - "traefik.http.routers.grafana.rule=Host(`isengard.local`) && PathPrefix(`/grafana`)"
+      - "traefik.http.middlewares.grafana.stripprefix.prefixes=/grafana"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.grafana.stripprefix.forceslash=true"
     links:
       - influxdb
-
-  # for raspberry pi
-  grafana_arm:
-    image: fg2it/grafana-armhf:v5.1.3
-    ports:
-      - "3000:3000"
-    links:
-      - influxdb
+    networks:
+      - isengard-overlay
     volumes:
       - grafana_arm_data:/var/lib/grafana
 
@@ -102,11 +119,19 @@ services:
       - TWILIO_AUTH_TOKEN
       - TWILIO_SENDER
       - TWILIO_NOTIFY_TO
-    ports:
-      - "5000:5000"
+    labels:
+      - "traefik.http.routers.sms-notifier.rule=Host(`isengard.local`) && PathPrefix(`/send-sms`)"
+      - "traefik.http.services.sms-notifier.loadbalancer.server.port=5000"
+    networks:
+      - isengard-overlay
     volumes:
       - ./threshold_alerts:/usr/local/threshold_alerts
       - ./notifier:/usr/local/notifier
 
 volumes:
   grafana_arm_data:
+
+networks:
+  isengard-overlay:
+    # Note: external networks are expected to exist prior to bringing this configuration up.
+    external: True
