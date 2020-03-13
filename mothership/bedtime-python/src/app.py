@@ -10,11 +10,7 @@ app = Flask(__name__)
 background = None
 
 
-@app.route('/')
-def hello():
-    return 'Hello, World!'
-
-@app.route('/circle_wave')
+@app.route('/health-check')
 def circle_wave():
     return render_template('circle_wave.html')
 
