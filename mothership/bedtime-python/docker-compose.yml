@@ -7,7 +7,7 @@ services:
     volumes:
       - "~/.python_hue:/root/.python_hue"
     labels:
-      - "traefik.http.routers.bedtime.rule=Host(`isengard.local`) && PathPrefix(`/bedtime`)"
+      - "traefik.http.routers.bedtime.rule=PathPrefix(`/bedtime`)"
     networks:
       - isengard-overlay
 
