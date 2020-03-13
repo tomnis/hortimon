@@ -19,7 +19,7 @@ services:
   influxdb:
     image: influxdb:1.7
     labels:
-      - "traefik.http.routers.influxdb.rule=Host(`isengard.local`) && PathPrefix(`/influxdb/`)"
+      - "traefik.http.routers.influxdb.rule=PathPrefix(`/influxdb/`)"
       - "traefik.http.middlewares.influxdb.stripprefix.prefixes=/influxdb"
       - "traefik.http.middlewares.influxdb.stripprefix.forceslash=true"
       - "traefik.http.routers.influxdb.middlewares=influxdb@docker"
@@ -36,7 +36,7 @@ services:
       KAPACITOR_URL: http://kapacitor:9092
       BASE_PATH: /chronograf
     labels:
-      - "traefik.http.routers.chronograf.rule=Host(`isengard.local`) && PathPrefix(`/chronograf/`)"
+      - "traefik.http.routers.chronograf.rule=PathPrefix(`/chronograf/`)"
     links:
       - influxdb
       - kapacitor
@@ -98,7 +98,7 @@ services:
         GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s/grafana/"
         GF_SERVER_SERVE_FROM_SUB_PATH: "true"
     labels:
-      - "traefik.http.routers.grafana.rule=Host(`isengard.local`) && PathPrefix(`/grafana`)"
+      - "traefik.http.routers.grafana.rule=PathPrefix(`/grafana`)"
     links:
       - influxdb
     networks:
@@ -117,7 +117,7 @@ services:
       - TWILIO_SENDER
       - TWILIO_NOTIFY_TO
     labels:
-      - "traefik.http.routers.sms-notifier.rule=Host(`isengard.local`) && PathPrefix(`/send-sms`)"
+      - "traefik.http.routers.sms-notifier.rule=PathPrefix(`/send-sms`)"
     networks:
       - isengard-overlay
     volumes:
