@@ -21,7 +21,7 @@ services:
     volumes:
       - ./data/influxdb:/var/lib/influxdb
     networks:
-      - isengard-overlay
+      - isengard
 
   # Define a Chronograf service
   chronograf:
@@ -34,7 +34,7 @@ services:
       - influxdb
       - kapacitor
     networks:
-      - isengard-overlay
+      - isengard
 
   # Define a Kapacitor service
   kapacitor:
@@ -48,7 +48,7 @@ services:
     ports:
       - "9092:9092"
     networks:
-      - isengard-overlay
+      - isengard
     volumes:
       - ./tickscripts:/usr/local/tickscripts
       - ./data/alerts:/var/log/alerts
@@ -64,7 +64,7 @@ services:
     links:
       - influxdb
     networks:
-      - isengard-overlay
+      - isengard
 
   # Define a service for using the kapacitor CLI tool.
   # docker-compose run kapacitor-cli
@@ -77,7 +77,7 @@ services:
       - kapacitor
       - sms-notifier
     networks:
-      - isengard-overlay
+      - isengard
     volumes:
       - ./tickscripts:/usr/local/tickscripts
       - ./data/alerts:/var/log/alerts
@@ -92,7 +92,7 @@ services:
     links:
       - influxdb
     networks:
-      - isengard-overlay
+      - isengard
     volumes:
       - grafana_arm_data:/var/lib/grafana
 
@@ -109,7 +109,7 @@ services:
     labels:
       - "traefik.http.routers.sms-notifier.rule=PathPrefix(`/send-sms`)"
     networks:
-      - isengard-overlay
+      - isengard
     volumes:
       - ./threshold_alerts:/usr/local/threshold_alerts
       - ./notifier:/usr/local/notifier
@@ -118,5 +118,5 @@ volumes:
   grafana_arm_data:
 
 networks:
-  isengard-overlay:
+  isengard:
     external: True
