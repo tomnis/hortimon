@@ -1,32 +1,44 @@
-version: '3.2'
+version: '3.7'
 
 services:
-  reverse-proxy:
+  traefik:
     image: traefik:v2.1
     restart: always
-    # Enables the web UI and tells Traefik to listen to docker
-    command: --api.insecure=true --providers.docker
+    command:
+      #- --log.level=DEBUG
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.defaultrule=PathPrefix(`/{{ index .Labels "com.docker.compose.service" }}`)
+      - --entryPoints.web.address=:80
+        # https://github.com/containous/traefik/pull/6417/files
+        #- --entrypoints.web.http.middlewares=my-chain@docker
+    labels:
+      traefik.http.middlewares.add-slash.redirectregex.regex: ^(https?://[^/]+/[\w-]+)$$
+      traefik.http.middlewares.add-slash.redirectregex.replacement: $${1}/
+      traefik.http.middlewares.add-slash.redirectregex.permanent: true
+      traefik.http.middlewares.strip.stripprefixregex.regex: /[\w-]+
+      traefik.http.middlewares.my-chain.chain.middlewares: add-slash,strip
+      # use this for stripping prefix if your backend listens on "/"
+      #- traefik.http.routers.whoami.middlewares=my-chain
     ports:
       # The HTTP port
       - "80:80"
       # The Web UI (enabled by --api.insecure=true)
       - "8080:8080"
-    networks:
-      - isengard-overlay
     volumes:
-      # So that Traefik can listen to the Docker events
-      - /var/run/docker.sock:/var/run/docker.sock
+      # Traefik listens to Docker events
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - isengard
 
   whoami:
     # A container that exposes an API to show its IP address
     image: containous/whoami
     restart: always
-    labels:
-      - "traefik.http.routers.whoami.rule=Host(`isengard.local`) && PathPrefix(`/whoami`)"
     networks:
-      - isengard-overlay
+      - isengard
 
 networks:
-  isengard-overlay:
-    # Note: external networks are expected to exist prior to bringing this configuration up.
+  isengard:
+    # must exist prior to standing this up
     external: True

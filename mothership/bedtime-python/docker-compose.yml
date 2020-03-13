@@ -6,12 +6,10 @@ services:
     restart: always
     volumes:
       - "~/.python_hue:/root/.python_hue"
-    labels:
-      - "traefik.http.routers.bedtime.rule=PathPrefix(`/bedtime`)"
     networks:
-      - isengard-overlay
+      - isengard
 
 networks:
-  isengard-overlay:
+  isengard:
     # Note: external networks are expected to exist prior to bringing this configuration up.
     external: True

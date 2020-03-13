@@ -1,6 +1,7 @@
 FROM ubuntu:16.04
-
 MAINTAINER tomas
+
+EXPOSE 5000
 
 RUN apt-get update -y && \
     apt-get install -y \
