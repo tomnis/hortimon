@@ -8,6 +8,9 @@ import json
 logging.basicConfig()
 app = Flask(__name__)
 background = None
+# traefik will route us on this prefix path (name of docker service) 
+# TODO make this overridable
+base_path = '/bedtime'
 
 
 @app.route('/health-check')
@@ -15,11 +18,12 @@ def circle_wave():
     return render_template('circle_wave.html')
 
 
-@app.route('/bedtime')
+@app.route('/')
 def student():
-   return render_template('bedtime.html')
+    global base_path
+    return render_template('bedtime.html', base_path=base_path)
 
-@app.route('/bedtimePost', methods = ['POST'])
+@app.route('/go', methods = ['POST'])
 def bedtime():
     global background
 

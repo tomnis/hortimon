@@ -18,11 +18,6 @@ services:
   # Define an InfluxDB service
   influxdb:
     image: influxdb:1.7
-    labels:
-      - "traefik.http.routers.influxdb.rule=PathPrefix(`/influxdb/`)"
-      - "traefik.http.middlewares.influxdb.stripprefix.prefixes=/influxdb"
-      - "traefik.http.middlewares.influxdb.stripprefix.forceslash=true"
-      - "traefik.http.routers.influxdb.middlewares=influxdb@docker"
     volumes:
       - ./data/influxdb:/var/lib/influxdb
     networks:
@@ -35,8 +30,6 @@ services:
       INFLUXDB_URL: http://influxdb:8086
       KAPACITOR_URL: http://kapacitor:9092
       BASE_PATH: /chronograf
-    labels:
-      - "traefik.http.routers.chronograf.rule=PathPrefix(`/chronograf/`)"
     links:
       - influxdb
       - kapacitor
@@ -91,14 +84,11 @@ services:
 
   grafana:
     image: grafana/grafana:6.6.2
-    # TODO consider using strip prefix instead of root url
     environment:
         GF_AUTH_ANONYMOUS_ENABLED: "true"
         GF_SERVER_DOMAIN: "isengard.local"
         GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s/grafana/"
         GF_SERVER_SERVE_FROM_SUB_PATH: "true"
-    labels:
-      - "traefik.http.routers.grafana.rule=PathPrefix(`/grafana`)"
     links:
       - influxdb
     networks:
@@ -129,5 +119,4 @@ volumes:
 
 networks:
   isengard-overlay:
-    # Note: external networks are expected to exist prior to bringing this configuration up.
     external: True

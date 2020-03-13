@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   traefik:
-    image: traefik:v2.1
+    image: traefik:v2.2
     restart: always
     command:
       #- --log.level=DEBUG
@@ -10,16 +10,15 @@ services:
       - --providers.docker=true
       - --providers.docker.defaultrule=PathPrefix(`/{{ index .Labels "com.docker.compose.service" }}`)
       - --entryPoints.web.address=:80
-        # https://github.com/containous/traefik/pull/6417/files
-        #- --entrypoints.web.http.middlewares=my-chain@docker
+      # default middleware for all dynamic routers. add slash and strip prefix.
+      # we expect all backends to listen on bare slash route.
+      - --entrypoints.web.http.middlewares=my-chain@docker
     labels:
       traefik.http.middlewares.add-slash.redirectregex.regex: ^(https?://[^/]+/[\w-]+)$$
       traefik.http.middlewares.add-slash.redirectregex.replacement: $${1}/
       traefik.http.middlewares.add-slash.redirectregex.permanent: true
       traefik.http.middlewares.strip.stripprefixregex.regex: /[\w-]+
       traefik.http.middlewares.my-chain.chain.middlewares: add-slash,strip
-      # use this for stripping prefix if your backend listens on "/"
-      #- traefik.http.routers.whoami.middlewares=my-chain
     ports:
       # The HTTP port
       - "80:80"
@@ -40,5 +39,4 @@ services:
 
 networks:
   isengard:
-    # must exist prior to standing this up
     external: True

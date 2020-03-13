@@ -11,5 +11,4 @@ services:
 
 networks:
   isengard:
-    # Note: external networks are expected to exist prior to bringing this configuration up.
     external: True
