@@ -6,7 +6,7 @@ services:
     image: traefik:v2.2
     restart: always
     command:
-      #- --log.level=DEBUG
+      - --log.level=DEBUG
       - --api.insecure=true
       - --providers.docker=true
       - --providers.docker.defaultrule=PathPrefix(`/{{ index .Labels "com.docker.compose.service" }}`)
@@ -73,6 +73,11 @@ services:
       INFLUXDB_URL: http://influxdb:8086
       KAPACITOR_URL: http://kapacitor:9092
       BASE_PATH: /chronograf
+      #LOG_LEVEL: DEBUG
+    labels:
+      # we add back 'chronograf' prefix before forwarding request.
+      - "traefik.http.middlewares.add-chronograf-prefix.addprefix.prefix=/chronograf"
+      - "traefik.http.routers.chronograf.middlewares=add-chronograf-prefix@docker"
     links:
       - influxdb
       - kapacitor
@@ -163,3 +168,4 @@ volumes:
 networks:
   isengard:
     external: True
+
