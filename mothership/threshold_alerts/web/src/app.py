@@ -6,9 +6,6 @@ import json
 import os
 import sys
 
-path =  "../../notifier"
-sys.path.append(os.path.abspath(path))
-
 from TwilioNotifier import *
 
 @app.route('/')

@@ -6,10 +6,10 @@ RUN apt-get update -y && \
     pip3 install --upgrade pip && \
     apt-get clean
 
-COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
+COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 
 COPY . /app
 ENTRYPOINT ["python3"]
-CMD ["app.py"]
+CMD ["src/app.py"]
