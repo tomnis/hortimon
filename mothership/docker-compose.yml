@@ -48,7 +48,7 @@ services:
 
   # Define a Telegraf service
   telegraf:
-    image: telegraf:1.13.4-alpine
+    image: telegraf:1.13.4
     restart: always
     environment:
       HOST_PROC: /host/proc
@@ -59,7 +59,7 @@ services:
     #  - "8094:8094"
     #  - "8125:8125/udp"
     volumes:
-      #- ./etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
       - /proc:/host/proc:ro
     networks:
       - isengard
