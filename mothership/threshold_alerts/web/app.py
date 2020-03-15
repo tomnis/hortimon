@@ -31,8 +31,8 @@ def internal_send_sms(message, to_numbers):
     return "messages sent: " + str(len(to_numbers))
     
 
-@app.route('/send-sms', methods=['POST'])
-def send_sms():
+@app.route('/send', methods=['POST'])
+def send():
     """
     Sends sms notifications to the comma-separated numbers in the request body field "to_numbers".
     """
@@ -44,8 +44,8 @@ def send_sms():
     return internal_send_sms(message, to_numbers)
 
 
-@app.route('/send-sms-to-env', methods=['POST'])
-def send_sms_to_env():
+@app.route('/send-env', methods=['POST'])
+def send_env():
     """
     Sends sms notifications to the comma-separated numbers in the environment var TWILIO_NOTIFY_TO.
     """

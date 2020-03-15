@@ -1,9 +1,15 @@
 FROM ubuntu:latest
 MAINTAINER tomas
-RUN apt-get update -y
-RUN apt-get install -y python-pip python-dev build-essential
-COPY . /usr/local/threshold_alerts/web
-WORKDIR /usr/local/threshold_alerts/web
-RUN pip install -r requirements.txt
-ENTRYPOINT ["python"]
+EXPOSE 5000
+RUN apt-get update -y && \
+    apt-get install -y python3-pip python3-dev build-essential && \
+    pip3 install --upgrade pip && \
+    apt-get clean
+
+COPY ./requirements.txt /app/requirements.txt
+WORKDIR /app
+RUN pip3 install -r requirements.txt
+
+COPY . /app
+ENTRYPOINT ["python3"]
 CMD ["app.py"]

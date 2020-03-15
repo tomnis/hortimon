@@ -156,8 +156,8 @@ services:
 
 
   # flask microservice for sending sms text
-  # POST to http://sms-notifier:5000/send-sms
-  sms-notifier:
+  # POST to http://sms:5000/send
+  sms:
     build: ./threshold_alerts/web
     restart: always
     environment:
@@ -165,13 +165,11 @@ services:
       - TWILIO_AUTH_TOKEN
       - TWILIO_SENDER
       - TWILIO_NOTIFY_TO
-    labels:
-      - "traefik.http.routers.sms-notifier.rule=PathPrefix(`/send-sms`)"
-    networks:
-      - isengard
     volumes:
       - ./threshold_alerts:/usr/local/threshold_alerts
       - ./notifier:/usr/local/notifier
+    networks:
+      - isengard
 
 volumes:
   grafana_arm_data:
