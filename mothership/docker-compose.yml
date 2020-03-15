@@ -158,16 +158,13 @@ services:
   # flask microservice for sending sms text
   # POST to http://sms:5000/send
   sms:
-    build: ./threshold_alerts/web
+    build: ./sms
     restart: always
     environment:
       - TWILIO_ACCOUNT_SID
       - TWILIO_AUTH_TOKEN
       - TWILIO_SENDER
       - TWILIO_NOTIFY_TO
-    volumes:
-      - ./threshold_alerts:/usr/local/threshold_alerts
-      - ./notifier:/usr/local/notifier
     networks:
       - isengard
 
