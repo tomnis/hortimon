@@ -37,14 +37,14 @@ def main():
     ap.add_argument("-d", "--dry-run", help="whether to treat this as a dry run", type=bool, default=False)
     ap.add_argument("-e", "--environment", help="influxdb tag for the series we are tracking")
     ap.add_argument("-p", "--plug-alias", help="alias of the smart plug")
-    ap.add_argument("-t", "--target-temperature", help="target temperature of the environment", type=float)
+    ap.add_argument("-t", "--max-temperature", help="max temperature of the environment", type=float)
     ap.add_argument("-n", "--to-numbers", help="comma separated numbers to send notifications to")
     args = vars(ap.parse_args())
 
     dry_run = args.get("dry_run")
     environment = args.get("environment")
     plug_alias = args.get("plug_alias")
-    target_temp = args.get("target_temperature")
+    max_temp = args.get("max_temperature")
     plug_ip = find_plug_ip_address(plug_alias)
     print(plug_alias)
     print(plug_ip)
@@ -53,7 +53,7 @@ def main():
     print(current_temp)
 
 
-    if (current_temp > target_temp):
+    if (current_temp > max_temp):
         if not dry_run:
             state_changed = set_plug(plug_ip, True)
     else:
