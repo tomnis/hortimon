@@ -45,7 +45,7 @@ def write_values(temperature, humidity, dew_point, environment):
     """
 
     # TODO accept host and possibly series as arguments
-    client = InfluxDBClient('hortimon-mothership.local', 8086, 'root', 'root', 'garden')
+    client = InfluxDBClient(host='isengard.lan', port=80, path='/influxdb',  username='root', password='root', database='garden')
     client.create_database('garden')
     json_body = [
         {
