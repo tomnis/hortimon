@@ -1,6 +1,14 @@
 version: '3.7'
 services:
-  crebain:
+  dht:
+    build: .
+    restart: always
+    devices:
+      - "/dev/mem"
+    networks:
+      - isengard
+
+  sht:
     build: .
     restart: always
     devices:
