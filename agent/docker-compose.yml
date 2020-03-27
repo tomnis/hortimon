@@ -10,4 +10,4 @@ services:
     build: .
     restart: always
     privileged: true
-    command: python3 -u write_sht_sensor_values.py -e clone.chamber -d 3 -c 14
+    command: python3 -u write_sht_sensor_values.py -e clone.chamber -d 14 -c 4
