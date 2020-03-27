@@ -4,7 +4,7 @@ services:
     build: .
     restart: always
     devices:
-      - "/dev/mem"
+      - "/dev/gpiomem"
     networks:
       - isengard
 
@@ -12,7 +12,7 @@ services:
     build: .
     #restart: always
     devices:
-      - "/dev/mem"
+      - "/dev/gpiomem"
     networks:
       - isengard
 
