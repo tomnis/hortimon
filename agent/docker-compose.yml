@@ -10,7 +10,7 @@ services:
 
   sht:
     build: .
-    restart: always
+    #restart: always
     devices:
       - "/dev/mem"
     networks:
