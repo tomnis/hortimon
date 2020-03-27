@@ -25,6 +25,7 @@ import sys
 
 import Adafruit_DHT
 from influxdb import InfluxDBClient
+import schedule
 
 
 def parse_args():
@@ -70,7 +71,7 @@ def write_values(temperature, humidity, environment):
     """
 
     # TODO accept host and possibly series as arguments
-    client = InfluxDBClient('hortimon-mothership.local', 8086, 'root', 'root', 'garden')
+    client = InfluxDBClient(host='isengard.lan', port=80, path='/influxdb',  username='root', password='root', database='garden')
     client.create_database('garden')
     json_body = [
         {
@@ -89,6 +90,10 @@ def write_values(temperature, humidity, environment):
     client.write_points(json_body)
 
 
+def sample(sensor, pin, environment):
+    (temperature, humidity) = read_sensor(sensor, pin)
+    write_values(temperature, humidity, environment)
+
 
 def main():
     args = parse_args()
@@ -99,11 +104,13 @@ def main():
     }
     sensor = sensor_args[args.get("sensor")]
     pin = args.get("pin")
-    (temperature, humidity) = read_sensor(sensor, pin)
-
     environment = args.get("environment")
-    write_values(temperature, humidity, environment)
 
+    schedule.every(30).seconds.do(lambda x: sample(sendor, pin, environment))
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
 if __name__ == "__main__":
         main()
