@@ -5,17 +5,9 @@ services:
     restart: always
     devices:
       - "/dev/gpiomem"
-    networks:
-      - isengard
 
   sht:
     build: .
     #restart: always
     devices:
       - "/dev/gpiomem"
-    networks:
-      - isengard
-
-networks:
-  isengard:
-    external: True
