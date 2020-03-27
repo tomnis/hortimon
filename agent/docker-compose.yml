@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+  crebain:
+    build: .
+    restart: always
+    devices:
+      - "/dev/mem"
+    networks:
+      - isengard
+
+networks:
+  isengard:
+    external: True
