@@ -3,11 +3,11 @@ services:
   dht:
     build: .
     restart: always
-    devices:
-      - "/dev/gpiomem"
+    privileged: true
+    command: python3 -u write_dht_sensor_values.py -e clone.chamber -s 2302 -p 2
 
   sht:
     build: .
-    #restart: always
-    devices:
-      - "/dev/gpiomem"
+    restart: always
+    privileged: true
+    command: python3 -u write_sht_sensor_values.py -e clone.chamber -d 3 -c 14

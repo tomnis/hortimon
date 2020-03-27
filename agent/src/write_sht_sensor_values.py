@@ -1,11 +1,13 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import argparse
 import sys
+import time
 
 from pi_sht1x import SHT1x
 import RPi.GPIO as GPIO
 from influxdb import InfluxDBClient
+import schedule
 
 
 def parse_args():
@@ -63,15 +65,23 @@ def write_values(temperature, humidity, dew_point, environment):
     client.write_points(json_body)
 
 
+def sample(data_pin, clock_pin, environment):
+    (temperature, humidity, dew_point) = read_sensor(data_pin, clock_pin)
+    write_values(temperature, humidity, dew_point, environment)
+
+
 
 def main():
     args = parse_args()
     data_pin = args.get("data_pin")
     clock_pin = args.get("clock_pin")
-    (temperature, humidity, dew_point) = read_sensor(data_pin, clock_pin)
-
     environment = args.get("environment")
-    write_values(temperature, humidity, dew_point, environment)
+
+    schedule.every(30).seconds.do(lambda: sample(data_pin, clock_pin, environment))
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
 
 if __name__ == "__main__":
