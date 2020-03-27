@@ -19,4 +19,4 @@ COPY requirements.txt /app
 RUN pip3 install -r requirements.txt
 COPY src /app
 
-CMD [ "python3", "-u", "write_dht_sensor_values.py", "-e,"  "clone.chamber", "-s", "2302", "-p", "2" ]
+CMD [ "python3", "-u", "write_dht_sensor_values.py", "-e",  "clone.chamber", "-s", "2302", "-p", "2" ]
