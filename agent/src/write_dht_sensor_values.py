@@ -107,7 +107,7 @@ def main():
     pin = args.get("pin")
     environment = args.get("environment")
 
-    schedule.every(30).seconds.do(lambda: sample(sendor, pin, environment))
+    schedule.every(30).seconds.do(lambda: sample(sensor, pin, environment))
 
     while True:
         schedule.run_pending()
