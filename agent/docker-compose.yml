@@ -4,10 +4,10 @@ services:
     build: .
     restart: always
     privileged: true
-    command: python3 -u write_dht_sensor_values.py -e clone.chamber -s 2302 -p 2
+    command: python3 -u write_dht_sensor_values.py -e $ENV_TAG -s 2302 -p 2
 
   sht:
     build: .
     restart: always
     privileged: true
-    command: python3 -u write_sht_sensor_values.py -e clone.chamber -d 14 -c 4
+    command: python3 -u write_sht_sensor_values.py -e $ENV_TAG -d 14 -c 4
