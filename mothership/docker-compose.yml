@@ -134,10 +134,18 @@ services:
       - isengard
 
   exhaust-fan:
-    build: ./control-scripts
+    build: ./exhaust-fan
     restart: always
     # for plug discovery
     network_mode: host
+
+  ethmon:
+    build: ./ethmon
+    restart: always
+    environment:
+      - ETHMON_ADDRESS
+      - ETHMON_TO_NUMBERS
+
 
   # watch for pedestrians, turn on lights
   barad-dur:
