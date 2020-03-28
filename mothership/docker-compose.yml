@@ -39,7 +39,7 @@ services:
       - isengard
 
   bedtime:
-    build: ./bedtime-python
+    build: ./bedtime
     restart: always
     volumes:
       - "~/.python_hue:/root/.python_hue"
