@@ -11,9 +11,6 @@ RUN apt-get update -y && \
     pip3 install --upgrade pip && \
     apt-get clean
 
-ENV ETHMON_ADDRESS
-ENV ETHMON_TO_NUMBERS
-
 WORKDIR /app
 COPY requirements.txt /app
 RUN pip3 install -r requirements.txt
