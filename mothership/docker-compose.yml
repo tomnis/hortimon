@@ -120,41 +120,6 @@ services:
     volumes:
       - grafana_arm_data:/var/lib/grafana
 
-  # Define a Kapacitor service
-  #kapacitor:
-  #  image: kapacitor:1.3.3
-  #  restart: always
-  #  environment:
-  #    - KAPACITOR_HOSTNAME=kapacitor
-  #    - KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086
-  #  links:
-  #    - influxdb
-  #    - sms-notifier
-  #  ports:
-  #    - "9092:9092"
-  #  networks:
-  #    - isengard
-  #  volumes:
-  #    - ./tickscripts:/usr/local/tickscripts
-  #    - ./data/alerts:/var/log/alerts
-
-  # Define a service for using the kapacitor CLI tool.
-  # docker-compose run kapacitor-cli
-  #kapacitor-cli:
-  #  image: kapacitor:1.3.3
-  #  entrypoint: bash
-  #  environment:
-  #    KAPACITOR_URL: http://kapacitor:9092
-  #  links:
-  #    - kapacitor
-  #    - sms-notifier
-  #  networks:
-  #    - isengard
-  #  volumes:
-  #    - ./tickscripts:/usr/local/tickscripts
-  #    - ./data/alerts:/var/log/alerts
-
-
   # flask microservice for sending sms text
   # POST to http://sms:5000/send
   sms:
@@ -167,6 +132,10 @@ services:
       - TWILIO_NOTIFY_TO
     networks:
       - isengard
+
+  exhaust-fan:
+    build: ./control-scripts
+    restart: always
 
 volumes:
   grafana_arm_data:

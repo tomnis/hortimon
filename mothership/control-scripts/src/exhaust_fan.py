@@ -7,6 +7,7 @@ from influxdb import InfluxDBClient
 from plug_util import find_plug_ip_address, set_plug
 import os
 import requests
+import schedule
 import time
 import pytz
 
@@ -25,6 +26,17 @@ def current_value(environment):
     result = client.query(query)
     return list(result.get_points())[0]["temperature"]
 
+
+def itr(dry_run, environment, plug_ip, max_temp):
+    current_temp = current_value(environment)
+    print(current_temp)
+
+    if (current_temp > max_temp):
+        if not dry_run:
+            state_changed = set_plug(plug_ip, True)
+    else:
+        if not dry_run:
+            state_changed = set_plug(plug_ip, False)
 
 
 def main():
@@ -49,16 +61,12 @@ def main():
     print(plug_alias)
     print(plug_ip)
 
-    current_temp = current_value(environment)
-    print(current_temp)
+    schedule.every(30).seconds.do(lambda: itr(dry_run, environment, plug_ip, max_temp))
 
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
-    if (current_temp > max_temp):
-        if not dry_run:
-            state_changed = set_plug(plug_ip, True)
-    else:
-        if not dry_run:
-            state_changed = set_plug(plug_ip, False)
 
 
 if __name__ == "__main__":
