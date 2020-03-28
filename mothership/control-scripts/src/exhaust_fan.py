@@ -20,7 +20,7 @@ def current_value(environment):
     :param environment: tag to check
     :return: current value in the given series
     """
-    client = InfluxDBClient(host='isengard.local', port=80, path='/influxdb',  username='root', password='root', database='garden')
+    client = InfluxDBClient(host='isengard.lan', port=80, path='/influxdb',  username='root', password='root', database='garden')
     query = """select temperature from garden where time > now() - 1m and  "environment"='%s'""" % (environment)
 
     result = client.query(query)
