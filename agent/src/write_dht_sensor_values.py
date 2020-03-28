@@ -1,30 +1,12 @@
-#!/usr/bin/python
-# Copyright (c) 2014 Adafruit Industries
-# Author: Tony DiCola
-
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+#!/usr/bin/python3
 
 import argparse
 import sys
+import time
 
 import Adafruit_DHT
 from influxdb import InfluxDBClient
+import schedule
 
 
 def parse_args():
@@ -70,7 +52,7 @@ def write_values(temperature, humidity, environment):
     """
 
     # TODO accept host and possibly series as arguments
-    client = InfluxDBClient('hortimon-mothership.local', 8086, 'root', 'root', 'garden')
+    client = InfluxDBClient(host='isengard.lan', port=80, path='/influxdb',  username='root', password='root', database='garden')
     client.create_database('garden')
     json_body = [
         {
@@ -89,6 +71,10 @@ def write_values(temperature, humidity, environment):
     client.write_points(json_body)
 
 
+def sample(sensor, pin, environment):
+    (temperature, humidity) = read_sensor(sensor, pin)
+    write_values(temperature, humidity, environment)
+
 
 def main():
     args = parse_args()
@@ -99,11 +85,13 @@ def main():
     }
     sensor = sensor_args[args.get("sensor")]
     pin = args.get("pin")
-    (temperature, humidity) = read_sensor(sensor, pin)
-
     environment = args.get("environment")
-    write_values(temperature, humidity, environment)
 
+    schedule.every(30).seconds.do(lambda: sample(sensor, pin, environment))
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
 if __name__ == "__main__":
         main()
