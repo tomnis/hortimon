@@ -53,12 +53,12 @@ def main():
     ap.add_argument("-n", "--to-numbers", help="comma separated numbers to send notifications to")
     args = vars(ap.parse_args())
 
-    dry_run = args.get("dry_run")
+    dry_run = args.get("dry-run")
     environment = args.get("environment")
-    plug_alias = args.get("plug_alias")
-    max_temp = args.get("max_temperature")
-    plug_ip = find_plug_ip_address(plug_alias)
+    plug_alias = args.get("plug-alias")
+    max_temp = args.get("max-temperature")
     print(plug_alias)
+    plug_ip = find_plug_ip_address(plug_alias)
     print(plug_ip)
 
     schedule.every(30).seconds.do(lambda: itr(dry_run, environment, plug_ip, max_temp))
