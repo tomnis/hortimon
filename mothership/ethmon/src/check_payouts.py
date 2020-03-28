@@ -60,15 +60,13 @@ def main():
     address = os.environ["ETHMON_ADDRESS"]
     print("ethmon_address: " + address)
     to_numbers = os.environ["ETHMON_TO_NUMBERS"]
-    print("ethmond_to_numbers: " + to_numbers)
-
+    print("ethmon_to_numbers: " + to_numbers)
 
     schedule.every(5).minutes.do(lambda: check_payouts(address, to_numbers))
 
     while True:
         schedule.run_pending()
         time.sleep(300)
-
 
 
 if __name__ == "__main__":
