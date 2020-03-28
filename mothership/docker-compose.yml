@@ -136,6 +136,8 @@ services:
   exhaust-fan:
     build: ./control-scripts
     restart: always
+    # for plug discovery
+    network_mode: host
 
 volumes:
   grafana_arm_data:

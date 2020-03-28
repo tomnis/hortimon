@@ -1,9 +1,6 @@
 FROM balenalib/raspberry-pi:buster
 MAINTAINER tomas
 
-# TODO unused but will be /status or /health
-EXPOSE 5000
-
 # install libs
 RUN apt-get update -y && \
     apt-get upgrade -y && \
