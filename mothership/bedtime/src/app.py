@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from hue_wrapper import HueWrapper
-from background import BackgroundTask
+from bedtime_task import BedtimeTask
+from wakeup_task import WakeupTask
 
 import logging
 import json
@@ -16,6 +17,13 @@ base_path = '/bedtime'
 @app.route('/health-check')
 def circle_wave():
     return render_template('circle_wave.html')
+
+
+@app.route('/wake')
+def wake():
+    hue = HueWrapper("philips-hue.lan")
+    a = WakeupTask(hue, "tomas lamps", time_minutes)
+    return 'started wake timer'
 
 
 @app.route('/')
@@ -38,7 +46,7 @@ def bedtime():
     print("starting new task (%s, %s)" % (starting_brightness, time_minutes))
     # sleep 60 seconds between transitions
     hue = HueWrapper("philips-hue.lan")
-    background = BackgroundTask(hue, "tomas lamps", starting_brightness, time_minutes)
+    background = BedtimeTask(hue, starting_brightness, time_minutes)
     return 'started bed timer (brightness=%s, time_minutes=%sm)' % (starting_brightness, time_minutes)
 
 
