@@ -23,7 +23,7 @@ class WakeupTask(object):
             hue.turn_group_on("tomas lamps")
             # TODO change to 6000, and interval
             hue.set_light_group_temp("tomas lamps", 2000)
-            current_brightness = starting_brightness
+            current_brightness = 0
 
             while self.__continue and current_brightness < 100:
                 hue.set_light_brightness('tomas lamp', current_brightness, transition_time_deci_sec / 2)
