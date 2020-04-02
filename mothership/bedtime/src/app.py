@@ -22,7 +22,7 @@ def circle_wave():
 @app.route('/wake')
 def wake():
     hue = HueWrapper("philips-hue.lan")
-    a = WakeupTask(hue, "tomas lamps", time_minutes)
+    a = WakeupTask(hue, time_minutes=1.0)
     return 'started wake timer'
 
 
