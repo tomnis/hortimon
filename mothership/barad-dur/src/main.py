@@ -25,13 +25,15 @@ from model.hue_state_change import HueStateChangeEvent
 from picamera.array import PiRGBArray
 from util.storm import getSunrise, getSunset
 from picamera import PiCamera
-from threading import Event
 
 import cv2
 import datetime
 import pytz
 import sys
 import time
+
+
+last_off_time = time.time()
 
 
 def get_camera():
@@ -43,7 +45,7 @@ def get_camera():
     resolution = (640, 480)
     camera = PiCamera()
     camera.resolution = resolution
-    camera.framerate = 12
+    camera.framerate = 20
     camera.contrast = 70
     camera.brightness = 80
     camera.iso = 800
@@ -65,9 +67,10 @@ def scan(camera, capture, hue, strategy):
     :param strategy:
     :return:
     """
+    global last_off_time
     human_detector = HumanDetector()
-    motion_detector = MotionDetector(min_area=1000)
-    human_threshold = 0.4
+    motion_detector = MotionDetector(min_area=900)
+    human_threshold = 0.3
 
     print("scanning video stream...")
     stream = camera.capture_continuous(capture, format="bgr", use_video_port=True)
@@ -114,11 +117,12 @@ def scan(camera, capture, hue, strategy):
         elif hue.is_group_on(strategy.hue_group):
             (human_rects, human_weights) = human_detector.detect(frame)
             print("human weights: {}".format(human_weights))
-            # filter on a small threshold to avoid false positives
-            filtered_weights = filter(lambda w: w > human_threshold, human_weights)
+            # filter on a smaller threshold to avoid false positives
+            filtered_weights = filter(lambda w: w > human_threshold * 0.75, human_weights)
             print("turning off {} lights".format(strategy.hue_group))
             if len(list(filtered_weights)) == 0:
                 hue.turn_group_off(strategy.hue_group)
+                last_off_time = time.time()
 
         previous_frame = frame
         # we need to truncate the buffer before the next iteration
@@ -160,21 +164,29 @@ def get_brightness():
         return 80
 
 
-def get_sleep_time():
+def get_sleep_time(last_off_time):
     """
     TODO this should lookup sunrise and sunset time
     TODO this should return a tuple and be combined with get_brightness()
     :return: the amount of time (in seconds) that we should sleep for after turning the lights on.
     """
     hour = datetime.datetime.now(pytz.timezone('US/Pacific')).hour
+    epoch_seconds = time.time()
+    sleep_time = None
     # late night
     if hour <= 3:
-        return 600
+        sleep_time = 600
     # sleep time
     elif hour <= 7:
-        return 120
+        sleep_time = 120
     else:
-        return 600
+        sleep_time = 600
+
+    if (epoch_seconds - last_off_time) < 10:
+        print("extending time, someone is probably cooking")
+        return sleep_time * 3
+    else:
+        return sleep_time
 
 
 def main():
@@ -184,16 +196,18 @@ def main():
     Creates a hue wrapper and monitors the video stream.
     :return:
     """
+    global last_off_time
     hue = HueWrapper("philips-hue.lan")
 
-    # create a strategy
-    strategy = HueStrategy("Kitchen", lambda: get_brightness(), lambda: get_sleep_time())
+    last_off_time = time.time()
 
     (camera, capture, result) = None, None, None
 
     while True:
         # create a camera
         (camera, capture) = get_camera()
+        # create a strategy
+        strategy = HueStrategy("Kitchen", lambda: get_brightness(), lambda: get_sleep_time(last_off_time))
         # scan the video stream
         result = scan(camera, capture, hue, strategy)
         camera.close()
