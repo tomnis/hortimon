@@ -31,12 +31,12 @@ services:
     networks:
       - isengard
 
-  whoami:
+  #whoami:
     # A container that exposes an API to show its IP address
-    image: containous/whoami
-    restart: always
-    networks:
-      - isengard
+    #image: containous/whoami
+    #restart: always
+    #networks:
+    #  - isengard
 
   bedtime:
     build: ./bedtime
@@ -87,23 +87,23 @@ services:
       - isengard
 
   # Define a Chronograf service
-  chronograf:
-    image: chronograf:1.8.0
-    restart: always
-    environment:
-      INFLUXDB_URL: http://influxdb:8086
-      #KAPACITOR_URL: http://kapacitor:9092
-      BASE_PATH: /chronograf
-      #LOG_LEVEL: DEBUG
-    labels:
-      # we add back 'chronograf' prefix before forwarding request.
-      - "traefik.http.middlewares.add-chronograf-prefix.addprefix.prefix=/chronograf"
-      - "traefik.http.routers.chronograf.middlewares=add-chronograf-prefix@docker"
-    links:
-      - influxdb
-      #- kapacitor
-    networks:
-      - isengard
+  #chronograf:
+  #  image: chronograf:1.8.0
+  #  restart: always
+  #  environment:
+  #    INFLUXDB_URL: http://influxdb:8086
+  #    #KAPACITOR_URL: http://kapacitor:9092
+  #    BASE_PATH: /chronograf
+  #    #LOG_LEVEL: DEBUG
+  #  labels:
+  #    # we add back 'chronograf' prefix before forwarding request.
+  #    - "traefik.http.middlewares.add-chronograf-prefix.addprefix.prefix=/chronograf"
+  #    - "traefik.http.routers.chronograf.middlewares=add-chronograf-prefix@docker"
+  #  links:
+  #    - influxdb
+  #    #- kapacitor
+  #  networks:
+  #    - isengard
 
   grafana:
     image: grafana/grafana:6.6.2
