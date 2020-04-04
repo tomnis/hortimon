@@ -20,6 +20,9 @@ class BedtimeTask(object):
         # start timer for interval
 
         def run_with_timer():
+            hue.set_light_group_brightness("tomas overhead lights", 0)
+            hue.set_light_group_temp("tomas overhead lights", 2000)
+            # we cant turn off when there are any transitions active
             hue.turn_group_off("tomas overhead lights")
             hue.set_light_group_temp("tomas lamps", 2000)
             current_brightness = starting_brightness
@@ -32,8 +35,8 @@ class BedtimeTask(object):
                 time.sleep(interval_sec)
                 current_brightness -= 1
 
-            if current_brightness == 0:
-                hue.turn_group_off(group)
+            if current_brightness <= 0:
+                hue.turn_group_off('tomas lamps')
 
         self.__thread = threading.Thread(target=run_with_timer, args=())
         self.__thread.daemon = True                            # Daemonize thread

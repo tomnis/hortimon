@@ -47,7 +47,7 @@ class HueWrapper:
         """
         self.bridge.set_group(group, "on", True)
 
-    def set_light_group_brightness(self, group, brightness_pct, transition_time):
+    def set_light_group_brightness(self, group, brightness_pct, transition_time=None):
         """
         Sets the brightness for the specified light group.
 
@@ -60,11 +60,11 @@ class HueWrapper:
         self.bridge.set_group(group, 'bri', self.brightness_from_pct(brightness_pct), transition_time)
 
     '''Get or set the color temperature of the light, in units of Kelvin [2000-6500]'''
-    def set_light_group_temp(self, group, temp):
+    def set_light_group_temp(self, group, temp, transition_time=None):
         mireds = int(round(1e6 / temp))
-        self.bridge.set_group(group, 'ct', mireds)
+        self.bridge.set_group(group, 'ct', mireds, transition_time)
 
-    def set_light_brightness(self, light, brightness_pct, transition_time):
+    def set_light_brightness(self, light, brightness_pct, transition_time=None):
         """
         Sets the brightness for the specified light.
 
