@@ -102,8 +102,8 @@ def bedtime():
 
 
 def cron():
-    weekday_start = "09:00"
-    weekend_start = "10:30"
+    weekday_start = "17:00"
+    weekend_start = "18:30"
     schedule.every().monday.at(weekday_start).do(lambda: wake())
     schedule.every().tuesday.at(weekday_start).do(lambda: wake())
     schedule.every().wednesday.at(weekday_start).do(lambda: wake())
@@ -112,7 +112,7 @@ def cron():
     schedule.every().saturday.at(weekend_start).do(lambda: wake())
     schedule.every().sunday.at(weekend_start).do(lambda: wake())
 
-    schedule.every().day.at("14:30").do(lambda: turn_all_off())
+    schedule.every().day.at("22:30").do(lambda: turn_all_off())
 
     # just for testing
     #schedule.every(10).minutes.do(lambda: wake())
