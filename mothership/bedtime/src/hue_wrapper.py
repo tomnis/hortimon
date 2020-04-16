@@ -77,6 +77,12 @@ class HueWrapper:
         """
         self.bridge.set_light(light, 'bri', self.brightness_from_pct(brightness_pct), transitiontime=transition_time)
 
+    def turn_light_on(self, light):
+        self.bridge.set_light(light, 'on', True)
+
+    def turn_light_off(self, light):
+        self.bridge.set_light(light, 'on', False)
+
     @staticmethod
     def brightness_from_pct(brightness_pct):
         """

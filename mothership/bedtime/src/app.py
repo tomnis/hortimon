@@ -10,10 +10,23 @@ import threading
 
 logging.basicConfig()
 app = Flask(__name__)
-background = None
-# traefik will route us on this prefix path (name of docker service) 
+background_sphere_lamp = None
+background_table_lamp = None
+# traefik will route us on this prefix path (name of docker service)
 # TODO make this overridable
 base_path = '/bedtime'
+
+
+# tomas_sphere_light
+# all tomas bedroom lights -- contains everything
+#
+# bedtime routine
+# - turn off overhead lights
+# - set lamps to bedtime brightness, dresser lamp dims in 5 min
+
+# tomas sphere lamp
+# tomas table lamp
+
 
 
 @app.route('/health-check')
@@ -24,12 +37,18 @@ def circle_wave():
 @app.route('/wake')
 def wake():
     print("waking up")
-    global background
+    global background_sphere_lamp
+    global background_table_lamp
 
-    if background is not None:
-        print("time in progress, stopping")
-        background.stop()
+    if background_sphere_lamp is not None:
+        print("sphere lamp time in progress, stopping")
+        background_sphere_lamp.stop()
 
+    if background_table_lamp is not None:
+        print("table lamp time in progress, stopping")
+        background_table_lamp.stop()
+
+    # TODO create a zone with all
     hue = HueWrapper("philips-hue.lan")
     # turn everything to 0 brightness and low temp
     hue.set_light_group_brightness("tomas overhead lights", 0)
@@ -64,11 +83,15 @@ def wake():
 
 def turn_all_off():
     print("turning everything off")
-    global background
+    global background_sphere_lamp
+    global background_table_lamp
 
-    if background is not None:
-        print("time in progress, stopping")
-        background.stop()
+    if background_sphere_lamp is not None:
+        print("sphere lamp time in progress, stopping")
+        background_sphere_lamp.stop()
+
+    if background_table_lamp is not None:
+        print("table lamp time in progress, stopping")
 
     hue = HueWrapper("philips-hue.lan")
     hue.set_light_group_brightness("tomas overhead lights", 0)
@@ -78,17 +101,21 @@ def turn_all_off():
     time.sleep(3)
 
 @app.route('/')
-def student():
+def bedtime():
     global base_path
     return render_template('bedtime.html', base_path=base_path)
 
 @app.route('/go', methods = ['POST'])
-def bedtime():
-    global background
+def bedtime_go():
+    global background_sphere_lamp
+    global background_table_lamp
 
-    if background is not None:
-        print("time in progress, stopping")
-        background.stop()
+    if background_sphere_lamp is not None:
+        print("sphere lamp time in progress, stopping")
+        background_sphere_lamp.stop()
+
+    if background_table_lamp is not None:
+        print("table lamp time in progress, stopping")
 
     result = json.loads(json.dumps(request.form))
     starting_brightness = int(result[u'brightness'])
@@ -97,7 +124,16 @@ def bedtime():
     print("starting new task (%s, %s)" % (starting_brightness, time_minutes))
     # sleep 60 seconds between transitions
     hue = HueWrapper("philips-hue.lan")
-    background = BedtimeTask(hue, starting_brightness, time_minutes)
+
+    hue.set_light_group_brightness("tomas overhead lights", 0)
+    hue.set_light_group_temp("tomas overhead lights", 2000)
+    # we cant turn off when there are any transitions active
+    hue.turn_group_off("tomas overhead lights")
+    hue.set_light_group_temp("tomas lamps", 2000)
+    hue.turn_group_on("tomas lamps")
+
+    background_sphere_lamp = BedtimeTask(hue, "tomas sphere lamp", 5, time_minutes)
+    background_table_lamp = BedtimeTask(hue, "tomas table lamp", starting_brightness, 5)
     return 'started bed timer (brightness=%s, time_minutes=%sm)' % (starting_brightness, time_minutes)
 
 
@@ -121,8 +157,6 @@ def cron():
     while True:
         schedule.run_pending()
         time.sleep(5)
-
-    # TODO turn off lights at 3pm?
 
 
 if __name__ == '__main__':
