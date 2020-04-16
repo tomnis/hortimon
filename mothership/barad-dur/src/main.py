@@ -46,7 +46,7 @@ def get_camera():
     camera = PiCamera()
     camera.resolution = resolution
     # TODO overclock
-    camera.framerate = 12
+    camera.framerate = 10
     camera.contrast = 70
     camera.brightness = 80
     camera.iso = 800
@@ -70,9 +70,9 @@ def scan(camera, capture, hue, strategy):
     """
     global last_off_time
     human_detector = HumanDetector()
-    motion_detector = MotionDetector(min_area=900)
-    human_threshold = 0.3
+    human_threshold = 0.4
 
+    last_seen_human_time = time.time()
     print("scanning video stream...")
     stream = camera.capture_continuous(capture, format="bgr", use_video_port=True)
 
@@ -84,48 +84,31 @@ def scan(camera, capture, hue, strategy):
     previous_frame = next(stream).array
     capture.truncate(0)
 
+    # check if the current frame contains a human
+    # if it does, turn lights on, set last_seen_human
+    # if not, turn lights off
     for frame in stream:
         frame = frame.array
+        (human_rects, human_weights) = human_detector.detect(frame)
+        #print("human weights: {}".format(human_weights))
 
-        # first check for motion
-        motion_rects = list(motion_detector.detect(previous_frame, frame))
-        if len(motion_rects) > 0:
-            print("found motion {}".format(motion_rects))
+        # filter on a small threshold to avoid false positives
+        filtered_weights = filter(lambda w: w > human_threshold, human_weights)
+        # TODO we should also check that the rects are overlapping
+        if len(list(filtered_weights)) > 0:
+            brightness = strategy.brightness()
+            print \
+                ("found humans above threshold {}, turning on {} lights, brightness={}".format(human_threshold, strategy.hue_group, brightness))
+            hue.turn_group_on(strategy.hue_group)
+            hue.set_light_group_brightness(strategy.hue_group, brightness)
+            last_seen_human_time = time.time()
+        # just print that we are likely avoiding a false positive
+        elif len(human_rects) > 0:
+            print("found humans below threshold {} (likely false positive)".format(human_threshold))
+        elif len(human_rects) == 0 and time.time() - last_seen_human_time > strategy.sleep_when_on:
+            hue.turn_group_off(strategy.hue_group)
+            last_off_time = time.time()
 
-            # the lights are already on and we found motion. leave them on and go back to sleep.
-            # its too slow to rely on the person detector here
-            if hue.is_group_on(strategy.hue_group):
-                break
-
-            # if we found motion, continue by checking for humans
-            (human_rects, human_weights) = human_detector.detect(frame)
-            print("human weights: {}".format(human_weights))
-
-            # filter on a small threshold to avoid false positives
-            filtered_weights = filter(lambda w: w > human_threshold, human_weights)
-            # TODO we should also check that the rects are overlapping
-            if len(list(filtered_weights)) > 0:
-                brightness = strategy.brightness()
-                print \
-                    ("found humans above threshold {}, turning on {} lights, brightness={}".format(human_threshold, strategy.hue_group, brightness))
-                hue.turn_group_on(strategy.hue_group)
-                hue.set_light_group_brightness(strategy.hue_group, brightness)
-                break
-            # just print that we are likely avoiding a false positive
-            elif len(human_rects) > 0:
-                print("found humans below threshold {} (likely false positive)".format(human_threshold))
-
-        elif hue.is_group_on(strategy.hue_group):
-            (human_rects, human_weights) = human_detector.detect(frame)
-            print("human weights: {}".format(human_weights))
-            # filter on a smaller threshold to avoid false positives
-            filtered_weights = filter(lambda w: w > human_threshold * 0.75, human_weights)
-            print("turning off {} lights".format(strategy.hue_group))
-            if len(list(filtered_weights)) == 0:
-                hue.turn_group_off(strategy.hue_group)
-                last_off_time = time.time()
-
-        previous_frame = frame
         # we need to truncate the buffer before the next iteration
         capture.truncate(0)
         capture.seek(0)
