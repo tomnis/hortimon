@@ -19,7 +19,6 @@
 
 from hue.hue_wrapper import HueWrapper
 from optics.human_detector import HumanDetector
-from optics.motion_detector import MotionDetector
 from model.hue_strategy import HueStrategy
 from model.hue_state_change import HueStateChangeEvent
 from picamera.array import PiRGBArray
@@ -32,8 +31,6 @@ import pytz
 import sys
 import time
 
-
-last_off_time = time.time()
 
 
 def get_camera():
@@ -68,10 +65,10 @@ def scan(camera, capture, hue, strategy):
     :param strategy:
     :return:
     """
-    global last_off_time
     human_detector = HumanDetector()
     human_threshold = 0.4
 
+    last_off_time = time.time()
     last_seen_human_time = time.time()
     print("scanning video stream...")
     stream = camera.capture_continuous(capture, format="bgr", use_video_port=True)
@@ -81,7 +78,6 @@ def scan(camera, capture, hue, strategy):
         next(stream)
         capture.truncate(0)
 
-    previous_frame = next(stream).array
     capture.truncate(0)
 
     # check if the current frame contains a human
@@ -180,10 +176,7 @@ def main():
     Creates a hue wrapper and monitors the video stream.
     :return:
     """
-    global last_off_time
     hue = HueWrapper("philips-hue.lan")
-
-    last_off_time = time.time()
 
     (camera, capture, result) = None, None, None
 
@@ -191,7 +184,7 @@ def main():
         # create a camera
         (camera, capture) = get_camera()
         # create a strategy
-        strategy = HueStrategy("Kitchen", lambda: get_brightness(), lambda: get_sleep_time(last_off_time))
+        strategy = HueStrategy("Kitchen", lambda: get_brightness(), lambda last_off_time: get_sleep_time(last_off_time))
         # scan the video stream
         result = scan(camera, capture, hue, strategy)
         camera.close()
