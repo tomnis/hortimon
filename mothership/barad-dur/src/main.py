@@ -66,7 +66,7 @@ def scan(camera, capture, hue, strategy):
     :return:
     """
     human_detector = HumanDetector()
-    human_threshold = 0.4
+    human_threshold = 0.5
 
     last_off_time = time.time()
     last_seen_human_time = time.time()
@@ -86,7 +86,7 @@ def scan(camera, capture, hue, strategy):
     for frame in stream:
         frame = frame.array
         (human_rects, human_weights) = human_detector.detect(frame)
-        #print("human weights: {}".format(human_weights))
+        print("human weights: {}".format(human_weights))
 
         # filter on a small threshold to avoid false positives
         filtered_weights = filter(lambda w: w > human_threshold, human_weights)
