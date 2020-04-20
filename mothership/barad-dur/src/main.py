@@ -43,7 +43,7 @@ def get_camera():
     camera = PiCamera()
     camera.resolution = resolution
     # TODO overclock
-    camera.framerate = 4
+    camera.framerate = 2
     camera.contrast = 70
     camera.brightness = 80
     camera.iso = 800
