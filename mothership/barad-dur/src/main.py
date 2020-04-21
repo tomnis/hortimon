@@ -42,8 +42,7 @@ def get_camera():
     resolution = (640, 480)
     camera = PiCamera()
     camera.resolution = resolution
-    # TODO overclock
-    camera.framerate = 2
+    camera.framerate = 3
     camera.contrast = 70
     camera.brightness = 80
     camera.iso = 800
@@ -66,7 +65,7 @@ def scan(camera, capture, hue, strategy):
     :return:
     """
     human_detector = HumanDetector()
-    human_threshold = 0.8
+    human_threshold = 0.5
 
     last_off_time = time.time()
     last_seen_human_time = time.time()
@@ -102,7 +101,7 @@ def scan(camera, capture, hue, strategy):
         elif len(human_rects) > 0:
             last_seen_human_time = time.time()
             print("found humans below threshold {} (likely false positive)".format(human_threshold))
-        elif len(human_rects) == 0 and time.time() - last_seen_human_time > 60: # strategy.sleep_when_on(last_off_time):
+        elif len(human_rects) == 0 and time.time() - last_seen_human_time > 120: # strategy.sleep_when_on(last_off_time):
             hue.turn_group_off(strategy.hue_group)
             last_off_time = time.time()
 
