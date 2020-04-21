@@ -133,7 +133,7 @@ def bedtime_go():
     hue.turn_group_on("tomas lamps")
 
     background_sphere_lamp = BedtimeTask(hue, "tomas sphere lamp", 8, time_minutes)
-    background_table_lamp = BedtimeTask(hue, "tomas table lamp", starting_brightness, 10)
+    background_table_lamp = BedtimeTask(hue, "tomas table lamp", starting_brightness, min(12, time_minutes))
     return 'started bed timer (brightness=%s, time_minutes=%sm)' % (starting_brightness, time_minutes)
 
 
