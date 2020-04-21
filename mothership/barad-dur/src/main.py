@@ -65,7 +65,7 @@ def scan(camera, capture, hue, strategy):
     :return:
     """
     human_detector = HumanDetector()
-    human_threshold = 0.5
+    human_threshold = 0.6
 
     last_off_time = time.time()
     last_seen_human_time = time.time()
