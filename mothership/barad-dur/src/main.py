@@ -106,7 +106,7 @@ def scan(camera, capture, hue, strategy):
             last_seen_human_time = time.time()
             print("found humans below threshold {} (likely false positive)".format(human_threshold))
         elif len(human_rects) == 0 and time.time() - last_seen_human_time > 60: # strategy.sleep_when_on(last_off_time):
-            if (group_on):
+            if group_on:
                 hue.set_light_group_brightness(strategy.hue_group, brightness)
                 hue.turn_group_off(strategy.hue_group)
                 group_on = False
