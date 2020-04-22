@@ -61,7 +61,9 @@ services:
     volumes:
       - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
       - /proc:/host/proc:ro
+      # for cpu temp
       - /sys/class/thermal/thermal_zone0/temp:/sys/class/thermal/thermal_zone0/temp:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - isengard
 
