@@ -65,9 +65,8 @@ def scan(camera, capture, hue, strategy):
     :return:
     """
     human_detector = HumanDetector()
-    human_threshold = 0.3
+    human_threshold = 0.0
 
-    last_off_time = time.time()
     last_seen_human_time = time.time()
     print("scanning video stream...")
     stream = camera.capture_continuous(capture, format="bgr", use_video_port=True)
@@ -79,11 +78,15 @@ def scan(camera, capture, hue, strategy):
 
     capture.truncate(0)
 
+
+    group_on = None
+
     # check if the current frame contains a human
     # if it does, turn lights on, set last_seen_human
     # if not, turn lights off
     for frame in stream:
         frame = frame.array
+        brightness = strategy.brightness()
         (human_rects, human_weights) = human_detector.detect(frame)
         print("human weights: {}".format(human_weights))
 
@@ -91,19 +94,22 @@ def scan(camera, capture, hue, strategy):
         filtered_weights = filter(lambda w: w > human_threshold, human_weights)
         # TODO we should also check that the rects are overlapping
         if len(list(filtered_weights)) > 0:
-            brightness = strategy.brightness()
             print \
                 ("found humans above threshold {}, turning on {} lights, brightness={}".format(human_threshold, strategy.hue_group, brightness))
-            hue.turn_group_on(strategy.hue_group)
-            hue.set_light_group_brightness(strategy.hue_group, brightness)
+            if group_on is not None and not group_on:
+                hue.turn_group_on(strategy.hue_group)
+                hue.set_light_group_brightness(strategy.hue_group, brightness)
+                group_on = True
             last_seen_human_time = time.time()
         # just print that we are likely avoiding a false positive
         elif len(human_rects) > 0:
             last_seen_human_time = time.time()
             print("found humans below threshold {} (likely false positive)".format(human_threshold))
-        elif len(human_rects) == 0 and time.time() - last_seen_human_time > 120: # strategy.sleep_when_on(last_off_time):
-            hue.turn_group_off(strategy.hue_group)
-            last_off_time = time.time()
+        elif len(human_rects) == 0 and time.time() - last_seen_human_time > 60: # strategy.sleep_when_on(last_off_time):
+            if (group_on):
+                hue.set_light_group_brightness(strategy.hue_group, brightness)
+                hue.turn_group_off(strategy.hue_group)
+                group_on = False
 
         # we need to truncate the buffer before the next iteration
         capture.truncate(0)
