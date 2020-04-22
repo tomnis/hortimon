@@ -42,7 +42,7 @@ def get_camera():
     resolution = (640, 480)
     camera = PiCamera()
     camera.resolution = resolution
-    camera.framerate = 3
+    camera.framerate = 2
     camera.contrast = 70
     camera.brightness = 80
     camera.iso = 800
@@ -65,7 +65,7 @@ def scan(camera, capture, hue, strategy):
     :return:
     """
     human_detector = HumanDetector()
-    human_threshold = 0.6
+    human_threshold = 0.3
 
     last_off_time = time.time()
     last_seen_human_time = time.time()
