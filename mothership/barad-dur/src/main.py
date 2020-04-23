@@ -42,7 +42,7 @@ def get_camera():
     resolution = (640, 480)
     camera = PiCamera()
     camera.resolution = resolution
-    camera.framerate = 2
+    camera.framerate = 1
     camera.contrast = 70
     camera.brightness = 80
     camera.iso = 800
