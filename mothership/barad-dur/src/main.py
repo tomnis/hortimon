@@ -97,19 +97,17 @@ def scan(camera, capture, hue, strategy):
             print \
                 ("found humans above threshold {}, turning on {} lights, brightness={}".format(human_threshold, strategy.hue_group, brightness))
             last_seen_human_time = time.time()
-            if group_on is None or not group_on:
-                hue.turn_group_on(strategy.hue_group)
-                hue.set_light_group_brightness(strategy.hue_group, brightness)
-                group_on = True
+            hue.turn_group_on(strategy.hue_group)
+            hue.set_light_group_brightness(strategy.hue_group, brightness)
+            group_on = True
         # just print that we are likely avoiding a false positive
         elif len(human_rects) > 0:
             last_seen_human_time = time.time()
             print("found humans below threshold {} (likely false positive)".format(human_threshold))
         elif len(human_rects) == 0 and time.time() - last_seen_human_time > 60: # strategy.sleep_when_on(last_off_time):
-            if group_on is not None and group_on:
-                hue.set_light_group_brightness(strategy.hue_group, brightness)
-                hue.turn_group_off(strategy.hue_group)
-                group_on = False
+            hue.set_light_group_brightness(strategy.hue_group, brightness)
+            hue.turn_group_off(strategy.hue_group)
+            group_on = False
 
         # we need to truncate the buffer before the next iteration
         capture.truncate(0)
