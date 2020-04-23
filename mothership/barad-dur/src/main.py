@@ -42,7 +42,7 @@ def get_camera():
     resolution = (640, 480)
     camera = PiCamera()
     camera.resolution = resolution
-    camera.framerate = 1
+    camera.framerate = 2
     camera.contrast = 70
     camera.brightness = 80
     camera.iso = 800
@@ -65,7 +65,7 @@ def scan(camera, capture, hue, strategy):
     :return:
     """
     human_detector = HumanDetector()
-    human_threshold = 0.0
+    human_threshold = 0.5
 
     last_seen_human_time = time.time()
     print("scanning video stream...")
@@ -96,11 +96,11 @@ def scan(camera, capture, hue, strategy):
         if len(list(filtered_weights)) > 0:
             print \
                 ("found humans above threshold {}, turning on {} lights, brightness={}".format(human_threshold, strategy.hue_group, brightness))
-            if group_on is not None and not group_on:
+            last_seen_human_time = time.time()
+            if group_on is None or not group_on:
                 hue.turn_group_on(strategy.hue_group)
                 hue.set_light_group_brightness(strategy.hue_group, brightness)
                 group_on = True
-            last_seen_human_time = time.time()
         # just print that we are likely avoiding a false positive
         elif len(human_rects) > 0:
             last_seen_human_time = time.time()
