@@ -21,5 +21,7 @@ class HumanDetector:
         image = imutils.resize(image, width=min(350, image.shape[1]))
         boxes = self.hog.detectMultiScale(image, winStride=winStride, padding=padding, scale=scale)
         after = time.time()
-        print("took {}s to find bounding boxes and weights {}".format(after - before, boxes))
+        if len(boxes[1]) > 0:
+            print("took {}s to find bounding boxes and weights {}".format(after - before, boxes))
+
         return boxes
