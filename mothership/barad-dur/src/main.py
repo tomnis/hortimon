@@ -65,7 +65,7 @@ def scan(camera, capture, hue, strategy):
     :return:
     """
     human_detector = HumanDetector()
-    human_threshold = 0.5
+    human_threshold = 0.4
 
     last_seen_human_time = time.time()
     print("scanning video stream...")
@@ -88,7 +88,7 @@ def scan(camera, capture, hue, strategy):
         frame = frame.array
         brightness = strategy.brightness()
         (human_rects, human_weights) = human_detector.detect(frame)
-        print("human weights: {}".format(human_weights))
+        #print("human weights: {}".format(human_weights))
 
         # filter on a small threshold to avoid false positives
         filtered_weights = filter(lambda w: w > human_threshold, human_weights)
@@ -151,7 +151,7 @@ def get_brightness():
         return 80
 
 
-def get_sleep_time(last_off_time):
+def get_sleep_time():
     """
     TODO this should lookup sunrise and sunset time
     TODO this should return a tuple and be combined with get_brightness()
@@ -192,7 +192,7 @@ def main():
         # create a camera
         (camera, capture) = get_camera()
         # create a strategy
-        strategy = HueStrategy("Kitchen", lambda: get_brightness(), lambda last_off_time: get_sleep_time(last_off_time))
+        strategy = HueStrategy("Kitchen", lambda: get_brightness(), lambda: get_sleep_time())
         # scan the video stream
         result = scan(camera, capture, hue, strategy)
         camera.close()
