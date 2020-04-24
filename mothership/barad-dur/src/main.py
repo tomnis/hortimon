@@ -43,7 +43,7 @@ def get_camera():
     resolution = (640, 480)
     camera = PiCamera()
     camera.resolution = resolution
-    camera.framerate = 3
+    camera.framerate = 4
     camera.contrast = 70
     camera.brightness = 80
     camera.iso = 800
@@ -66,7 +66,7 @@ def scan(camera, capture, hue, strategy):
     :return:
     """
     human_detector = HumanDetector()
-    human_threshold = 0.6
+    human_threshold = 0.9
 
     global last_seen_human_time
     print("scanning video stream...")
@@ -102,17 +102,19 @@ def scan(camera, capture, hue, strategy):
                 print("turning on lights")
                 hue.turn_group_on(strategy.hue_group)
                 hue.set_light_group_brightness(strategy.hue_group, brightness)
+                human_threshold = 0.5
                 group_on = True
                 break
         # just print that we are likely avoiding a false positive
         elif len(human_rects) > 0:
             last_seen_human_time = time.time()
             print("found humans below threshold {} (likely false positive)".format(human_threshold))
-        elif len(human_rects) == 0 and time.time() - last_seen_human_time > 90: # strategy.sleep_when_on(last_off_time):
+        elif len(human_rects) == 0 and time.time() - last_seen_human_time > 60: # strategy.sleep_when_on(last_off_time):
             if group_on is None or group_on is True:
                 print("turning off lights")
                 hue.set_light_group_brightness(strategy.hue_group, brightness)
                 hue.turn_group_off(strategy.hue_group)
+                human_threshold = 0.9
                 group_on = False
 
         # we need to truncate the buffer before the next iteration
@@ -177,7 +179,7 @@ def get_sleep_time():
     #     return sleep_time * 3
     # else:
     #     return sleep_time
-    return 60
+    return 30
 
 
 def main():
