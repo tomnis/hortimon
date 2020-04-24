@@ -97,17 +97,20 @@ def scan(camera, capture, hue, strategy):
             print \
                 ("found humans above threshold {}, turning on {} lights, brightness={}".format(human_threshold, strategy.hue_group, brightness))
             last_seen_human_time = time.time()
-            hue.turn_group_on(strategy.hue_group)
-            hue.set_light_group_brightness(strategy.hue_group, brightness)
-            group_on = True
+            if group_on is None or not group_on:
+                hue.turn_group_on(strategy.hue_group)
+                hue.set_light_group_brightness(strategy.hue_group, brightness)
+                group_on = True
+                break
         # just print that we are likely avoiding a false positive
         elif len(human_rects) > 0:
             last_seen_human_time = time.time()
             print("found humans below threshold {} (likely false positive)".format(human_threshold))
         elif len(human_rects) == 0 and time.time() - last_seen_human_time > 60: # strategy.sleep_when_on(last_off_time):
-            hue.set_light_group_brightness(strategy.hue_group, brightness)
-            hue.turn_group_off(strategy.hue_group)
-            group_on = False
+            if group_on is None or group_on:
+                hue.set_light_group_brightness(strategy.hue_group, brightness)
+                hue.turn_group_off(strategy.hue_group)
+                group_on = False
 
         # we need to truncate the buffer before the next iteration
         capture.truncate(0)
@@ -158,19 +161,20 @@ def get_sleep_time(last_off_time):
     epoch_seconds = time.time()
     sleep_time = None
     # late night
-    if hour <= 3:
-        sleep_time = 600
-    # sleep time
-    elif hour <= 7:
-        sleep_time = 120
-    else:
-        sleep_time = 600
+    # if hour <= 3:
+    #     sleep_time = 600
+    # # sleep time
+    # elif hour <= 7:
+    #     sleep_time = 120
+    # else:
+    #     sleep_time = 600
 
-    if (epoch_seconds - last_off_time) < 10:
-        print("extending time, someone is probably cooking")
-        return sleep_time * 3
-    else:
-        return sleep_time
+    # if (epoch_seconds - last_off_time) < 10:
+    #     print("extending time, someone is probably cooking")
+    #     return sleep_time * 3
+    # else:
+    #     return sleep_time
+    return 60
 
 
 def main():
