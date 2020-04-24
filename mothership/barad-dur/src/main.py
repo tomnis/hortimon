@@ -95,9 +95,10 @@ def scan(camera, capture, hue, strategy):
         # TODO we should also check that the rects are overlapping
         if len(list(filtered_weights)) > 0:
             print \
-                ("found humans above threshold {}, turning on {} lights, brightness={}".format(human_threshold, strategy.hue_group, brightness))
+                ("found humans above threshold {}, might turn on {} lights, brightness={}".format(human_threshold, strategy.hue_group, brightness))
             last_seen_human_time = time.time()
             if group_on is None or not group_on:
+                print("turning on lights")
                 hue.turn_group_on(strategy.hue_group)
                 hue.set_light_group_brightness(strategy.hue_group, brightness)
                 group_on = True
@@ -108,6 +109,7 @@ def scan(camera, capture, hue, strategy):
             print("found humans below threshold {} (likely false positive)".format(human_threshold))
         elif len(human_rects) == 0 and time.time() - last_seen_human_time > 60: # strategy.sleep_when_on(last_off_time):
             if group_on is None or group_on:
+                print("turning off lights")
                 hue.set_light_group_brightness(strategy.hue_group, brightness)
                 hue.turn_group_off(strategy.hue_group)
                 group_on = False
