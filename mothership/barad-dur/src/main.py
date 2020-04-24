@@ -66,7 +66,7 @@ def scan(camera, capture, hue, strategy):
     :return:
     """
     human_detector = HumanDetector()
-    human_threshold = 0.9
+    human_threshold = 0.8
 
     global last_seen_human_time
     print("scanning video stream...")
@@ -114,7 +114,7 @@ def scan(camera, capture, hue, strategy):
                 print("turning off lights")
                 hue.set_light_group_brightness(strategy.hue_group, brightness)
                 hue.turn_group_off(strategy.hue_group)
-                human_threshold = 0.9
+                human_threshold = 0.8
                 group_on = False
 
         # we need to truncate the buffer before the next iteration
