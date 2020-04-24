@@ -32,6 +32,7 @@ import sys
 import time
 
 
+last_seen_human_time = time.time()
 
 def get_camera():
     """
@@ -65,9 +66,9 @@ def scan(camera, capture, hue, strategy):
     :return:
     """
     human_detector = HumanDetector()
-    human_threshold = 0.4
+    human_threshold = 0.5
 
-    last_seen_human_time = time.time()
+    global last_seen_human_time
     print("scanning video stream...")
     stream = camera.capture_continuous(capture, format="bgr", use_video_port=True)
 
@@ -159,9 +160,9 @@ def get_sleep_time():
     TODO this should return a tuple and be combined with get_brightness()
     :return: the amount of time (in seconds) that we should sleep for after turning the lights on.
     """
-    hour = datetime.datetime.now(pytz.timezone('US/Pacific')).hour
-    epoch_seconds = time.time()
-    sleep_time = None
+    #hour = datetime.datetime.now(pytz.timezone('US/Pacific')).hour
+    #epoch_seconds = time.time()
+    #sleep_time = None
     # late night
     # if hour <= 3:
     #     sleep_time = 600
