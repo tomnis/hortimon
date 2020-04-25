@@ -42,7 +42,7 @@ def get_camera():
     """
     #resolution = (1296, 972)
     #resolution = (640, 480)
-    resolution = (3280, 2464)
+    resolution = (2592, 1944)
     camera = PiCamera()
     camera.resolution = resolution
     camera.framerate = 4
