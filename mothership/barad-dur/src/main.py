@@ -40,7 +40,8 @@ def get_camera():
 
     :return: a handle to the camera and its capture feed
     """
-    resolution = (640, 480)
+    resolution = (1296, 972)
+    #resolution = (640, 480)
     camera = PiCamera()
     camera.resolution = resolution
     camera.framerate = 4
