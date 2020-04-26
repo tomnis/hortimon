@@ -1,0 +1,18 @@
+#!/bin/bash
+source /home/millsmont.labs/.profile
+GIT_DIR="/home/millsmont.labs/hortimon.git"
+TARGET="/home/millsmont.labs/hortimon"
+mkdir -p $TARGET
+while read oldrev newrev ref
+do
+	echo "Ref $ref received. Deploying to production..."
+	git --work-tree=$TARGET --git-dir=$GIT_DIR checkout -f
+	cd $TARGET/mothership
+        docker-compose down --remove-orphans
+	docker-compose build
+	for service in $(docker-compose config --services)
+	do
+		docker-compose up --no-start $service
+		docker-compose start $service
+	done
+done
