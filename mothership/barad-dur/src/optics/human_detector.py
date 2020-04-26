@@ -18,7 +18,7 @@ class HumanDetector:
         :return: tuple bounding boxes and weights
         """
         before = time.time()
-        image = imutils.resize(image, width=min(550, image.shape[1]))
+        image = imutils.resize(image, width=min(500, image.shape[1]))
         boxes = self.hog.detectMultiScale(image, winStride=winStride, padding=padding, scale=scale)
         after = time.time()
         if len(boxes[1]) > 0:
