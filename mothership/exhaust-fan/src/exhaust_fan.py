@@ -61,11 +61,11 @@ def main():
     plug_ip = find_plug_ip_address(plug_alias)
     print("plug_ip: " + plug_ip)
 
-    schedule.every(20).seconds.do(lambda: itr(dry_run, environment, plug_ip, max_temp))
+    schedule.every(30).seconds.do(lambda: itr(dry_run, environment, plug_ip, max_temp))
 
     while True:
         schedule.run_pending()
-        time.sleep(20)
+        time.sleep(30)
 
 
 
