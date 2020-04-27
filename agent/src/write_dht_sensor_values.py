@@ -37,12 +37,11 @@ def read_sensor(sensor, pin):
     # guarantee the timing of calls to read the sensor).
     # If this happens try again!
     if humidity is not None and temperature is not None:
-        print('Temp={0:0.1f}*  Humidity={1:0.1f}%'.format(temperature, humidity))
+        #print('Temp={0:0.1f}*  Humidity={1:0.1f}%'.format(temperature, humidity))
         return (temperature, humidity)
     else:
-        print('Failed to get reading. Try again!')
+        #print('Failed to get reading. Try again!')
         sys.exit(1)
-    sensor = args.get("sensor")
 
 
 
@@ -67,7 +66,7 @@ def write_values(temperature, humidity, environment):
         }
     ]
 
-    print("writing to influx, environment=" + environment)
+    #print("writing to influx, environment=" + environment)
     client.write_points(json_body)
 
 
@@ -91,7 +90,7 @@ def main():
 
     while True:
         schedule.run_pending()
-        time.sleep(1)
+        time.sleep(15)
 
 if __name__ == "__main__":
         main()
