@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import argparse
-import sys
 import time
 
 from pi_sht1x import SHT1x
@@ -30,7 +29,7 @@ def read_sensor(data_pin, clock_pin):
         temperature = sensor.read_temperature()
         humidity = sensor.read_humidity(temperature)
         dew_point = sensor.calculate_dew_point(temperature, humidity)
-        print(sensor)
+        # print(sensor)
 
     temperature = temperature * 9/5.0 + 32
     dew_point = dew_point * 9/5.0 + 32
@@ -61,7 +60,7 @@ def write_values(temperature, humidity, dew_point, environment):
         }
     ]
 
-    print("writing to influx, environment=" + environment)
+    # print("writing to influx, environment=" + environment)
     client.write_points(json_body)
 
 
@@ -81,7 +80,7 @@ def main():
 
     while True:
         schedule.run_pending()
-        time.sleep(1)
+        time.sleep(15)
 
 
 if __name__ == "__main__":

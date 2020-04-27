@@ -11,3 +11,16 @@ services:
     restart: always
     privileged: true
     command: python3 -u write_sht_sensor_values.py -e $SHT_ENV -d 14 -c 4
+
+  telegraf:
+    image: telegraf:1.13.4
+    restart: always
+    environment:
+      HOST_PROC: /host/proc
+    volumes:
+      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /proc:/host/proc:ro
+      # for cpu temp
+      - /sys/class/thermal/thermal_zone0/temp:/sys/class/thermal/thermal_zone0/temp:ro
+      # for docker
+      - /var/run/docker.sock:/var/run/docker.sock:ro
