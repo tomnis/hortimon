@@ -121,7 +121,7 @@ services:
     networks:
       - isengard
     volumes:
-      - grafana_arm_data:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
 
   # flask microservice for sending sms text
   # POST to http://sms:5000/send
@@ -150,7 +150,7 @@ services:
       - ETHMON_TO_NUMBERS
 
 volumes:
-  grafana_arm_data:
+  grafana_data:
 
 networks:
   isengard:
