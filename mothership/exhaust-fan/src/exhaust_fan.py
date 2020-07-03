@@ -65,7 +65,7 @@ def main():
 
     while True:
         schedule.run_pending()
-        time.sleep(30)
+        time.sleep(5)
 
 
 
