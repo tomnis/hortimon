@@ -13,18 +13,19 @@ services:
     command: python3 -u write_sht_sensor_values.py -e $SHT_ENV -d 14 -c 4
 
   # Define a Telegraf service
-  telegraf:
-    image: telegraf:1.13.4
-    restart: always
-    environment:
-      HOST_PROC: /host/proc
-    #ports:
-    #  - "8092:8092/udp"
-    #  - "8094:8094"
-    #  - "8125:8125/udp"
-    volumes:
-      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
-      - /proc:/host/proc:ro
-      # for cpu temp
-      - /sys/class/thermal/thermal_zone0/temp:/sys/class/thermal/thermal_zone0/temp:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+  # TODO exits 139 even with no extra yml config
+  #telegraf:
+  #  image: telegraf:1.13.4
+  #  restart: always
+  #  environment:
+  #    HOST_PROC: /host/proc
+  #  #ports:
+  #  #  - "8092:8092/udp"
+  #  #  - "8094:8094"
+  #  #  - "8125:8125/udp"
+  #  volumes:
+  #    - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+  #    - /proc:/host/proc:ro
+  #    # for cpu temp
+  #    - /sys/class/thermal/thermal_zone0/temp:/sys/class/thermal/thermal_zone0/temp:ro
+  #    - /var/run/docker.sock:/var/run/docker.sock:ro
