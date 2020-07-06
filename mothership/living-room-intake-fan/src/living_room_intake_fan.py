@@ -48,7 +48,7 @@ def main():
     plug_prefix = args.get("plug_prefix")
     print(plug_prefix)
 
-    schedule.every(5).minutes.do(lambda: itr(location, plug_prefix))
+    schedule.every(60).seconds.do(lambda: itr(location, plug_prefix))
 
     while True:
         schedule.run_pending()
