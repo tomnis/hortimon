@@ -26,9 +26,9 @@ def current_temperature(location):
 
 def itr(location, plug_prefix):
 
-    current_temp = current_temperature(location)
-    print("current temp in: " + str(location) + ": " + str(current_temp))
-    fans_state = current_temp < 73
+    outdoor_temp = current_temperature(location)
+    print("current temp in: " + str(location) + ": " + str(outdoor_temp))
+    fans_state = outdoor_temp < 75
     print("desired fan state: " + str(fans_state))
     for plug_ip in filter_plugs_by_prefix(plug_prefix):
         set_plug(plug_ip, fans_state)
@@ -48,11 +48,11 @@ def main():
     plug_prefix = args.get("plug_prefix")
     print(plug_prefix)
 
-    schedule.every(30).seconds.do(lambda: itr(location, plug_prefix))
+    schedule.every(5).minutes.do(lambda: itr(location, plug_prefix))
 
     while True:
         schedule.run_pending()
-        time.sleep(5)
+        time.sleep(30)
 
 
 
