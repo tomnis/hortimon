@@ -16,4 +16,4 @@ COPY requirements.txt /app
 RUN pip3 install -r requirements.txt
 COPY src /app
 
-CMD [ "python3", "-u", "check_payouts.py" ]
+CMD [ "python3", "-u", "living_room_intake_fan.py", "--plug-prefix",  "LR_intake" ]

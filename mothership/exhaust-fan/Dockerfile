@@ -1,4 +1,4 @@
-FROM balenalib/raspberry-pi:buster
+FROM ubuntu:20.10
 MAINTAINER tomas
 
 # install libs

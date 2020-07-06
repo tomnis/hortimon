@@ -142,6 +142,15 @@ services:
     # for plug discovery
     network_mode: host
 
+  living-room-intake-fan:
+    build: ./living-room-intake-fan
+    restart: always
+    # for plug discovery
+    network_mode: host
+    environment:
+      - OPEN_WEATHER_MAP_KEY
+      - ZIP_CODE
+
   ethmon:
     build: ./ethmon
     restart: always
