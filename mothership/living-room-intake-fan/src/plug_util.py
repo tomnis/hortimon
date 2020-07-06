@@ -22,7 +22,7 @@ def filter_plugs_by_prefix(prefix):
     :param prefix:
     :return: ip addresses of plugs whose aliases start with the given prefix
     """
-    return [ find_plug_ip_address(dev.alias) for dev in Discover.discover().values() if dev.alias.startswith(prefix) ]
+    return [ dev.ip_address for dev in Discover.discover().values() if dev.alias.startswith(prefix) ]
 
 def set_plug(plug_ip, value):
     """

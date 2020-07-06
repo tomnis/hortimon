@@ -30,10 +30,7 @@ def itr(location, plug_prefix):
     print("current temp in: " + str(location) + ": " + str(current_temp))
     fans_state = current_temp < 73
     print("desired fan state: " + str(fans_state))
-    ips = filter_plugs_by_prefix(plug_prefix)
-    print(ips)
-    for plug_ip in ips:
-        print("setting fan: " + plug_ip)
+    for plug_ip in filter_plugs_by_prefix(plug_prefix):
         set_plug(plug_ip, fans_state)
 
 
